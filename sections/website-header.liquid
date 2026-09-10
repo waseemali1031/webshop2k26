@@ -1,104 +1,98 @@
 {%- liquid
-# Component: Website Header
-# Description: Mobile-first website header. Collapses to a logo + toggle bar
-#   on mobile (tap to reveal tagline + CTA with a smooth height/opacity transition),
-#   and shows logo, tagline and CTA inline in a single row from desktop up.
-# Usage: Add as its own section (e.g. above or as part of the header group).
-#   CTA color/border/shape comes entirely from the theme's existing .button /
-#   .button--secondary classes - this file does not restyle them.
+  # Component: Website Header
+  # Description: Mobile-first website header. Collapses to a logo + toggle bar
+  #   on mobile (tap to reveal tagline + CTA with a smooth height/opacity transition),
+  #   and shows logo, tagline and CTA inline in a single row from desktop up.
+  # Usage: Add as its own section (e.g. above or as part of the header group).
+  #   CTA markup/animation comes from snippets/cta-button.liquid + assets/cta-button.css.
 
-assign logo_image = section.settings.logo_image
-assign logo_text = section.settings.logo_text
-assign tagline = section.settings.tagline
-assign show_button = section.settings.show_button
-assign button_label = section.settings.button_label
-assign button_link = section.settings.button_link
-assign button_style = section.settings.button_style
-assign enable_sticky = section.settings.enable_sticky
+  assign logo_image = section.settings.logo_image
+  assign logo_text = section.settings.logo_text
+  assign tagline = section.settings.tagline
+  assign show_button = section.settings.show_button
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+  assign button_style = section.settings.button_style
+  assign enable_sticky = section.settings.enable_sticky
 
-assign button_classes = 'button website-header__cta'
-if button_style == 'secondary'
-  assign button_classes = 'button button--secondary website-header__cta'
-endif
-
-assign section_classes = 'section-website-header website-header'
-if enable_sticky
-  assign section_classes = section_classes | append: ' website-header--sticky'
-endif
+  assign section_classes = 'section-website-header website-header'
+  if enable_sticky
+    assign section_classes = section_classes | append: ' website-header--sticky'
+  endif
 -%}
 
 <header
-class="{{ section_classes }}"
-data-section-id="{{ section.id }}"
-data-component="website-header"
-data-state="closed"
+  class="{{ section_classes }}"
+  data-section-id="{{ section.id }}"
+  data-component="website-header"
+  data-state="closed"
 >
-<style>
-  .website-header[data-section-id="{{ section.id }}"] {
-    --website-header-gap: {{ section.settings.content_gap }}px;
-    --website-header-logo-gap: {{ section.settings.logo_gap }}px;
-    --website-header-padding-top: {{ section.settings.padding_top }}px;
-    --website-header-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --website-header-duration: {{ section.settings.animation_speed }}ms;
-    --website-header-logo-width: {{ section.settings.logo_image_width }}px;
-  }
-</style>
+  <style>
+    .website-header[data-section-id="{{ section.id }}"] {
+      --website-header-gap: {{ section.settings.content_gap }}px;
+      --website-header-logo-gap: {{ section.settings.logo_gap }}px;
+      --website-header-padding-top: {{ section.settings.padding_top }}px;
+      --website-header-padding-bottom: {{ section.settings.padding_bottom }}px;
+      --website-header-duration: {{ section.settings.animation_speed }}ms;
+      --website-header-logo-width: {{ section.settings.logo_image_width }}px;
+    }
+  </style>
 
-<div class="website-header__container page-width">
-  <div class="website-header__bar">
-    <button
-      type="button"
-      class="website-header__toggle"
-      data-action="toggle"
-      aria-expanded="false"
-      aria-controls="WebsiteHeaderContent-{{ section.id }}"
+  <div class="website-header__container page-width">
+    <div class="website-header__bar">
+      <button
+        type="button"
+        class="website-header__toggle"
+        data-action="toggle"
+        aria-expanded="false"
+        aria-controls="WebsiteHeaderContent-{{ section.id }}"
+      >
+        <span class="website-header__icon-wrap" aria-hidden="true">
+          <span class="website-header__icon-bar website-header__icon-bar--top"></span>
+          <span class="website-header__icon-bar website-header__icon-bar--middle"></span>
+          <span class="website-header__icon-bar website-header__icon-bar--bottom"></span>
+        </span>
+        <span class="visually-hidden">{{ 'website_header.toggle_menu' | t: default: 'Menu' }}</span>
+      </button>
+
+      <a href="{{ routes.root_url }}" class="website-header__logo">
+        {%- if logo_image -%}
+          <img
+            src="{{ logo_image | image_url: width: 400 }}"
+            srcset="{{ logo_image | image_url: width: 200 }} 200w, {{ logo_image | image_url: width: 400 }} 400w"
+            width="{{ section.settings.logo_image_width }}"
+            height="{{ section.settings.logo_image_width | divided_by: logo_image.aspect_ratio }}"
+            alt="{{ logo_image.alt | default: shop.name | escape }}"
+            class="website-header__logo-image"
+            loading="eager"
+          />
+        {%- else -%}
+          <span class="website-header__logo-text">{{ logo_text | default: shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <div
+      id="WebsiteHeaderContent-{{ section.id }}"
+      class="website-header__content"
+      data-content
     >
-      <span class="website-header__icon-wrap" aria-hidden="true">
-        <span class="website-header__icon-bar website-header__icon-bar--top"></span>
-        <span class="website-header__icon-bar website-header__icon-bar--middle"></span>
-        <span class="website-header__icon-bar website-header__icon-bar--bottom"></span>
-      </span>
-      <span class="visually-hidden">{{ 'website_header.toggle_menu' | t: default: 'Menu' }}</span>
-    </button>
+      <div class="website-header__content-inner">
+        {%- if tagline != blank -%}
+          <div class="website-header__tagline">{{ tagline }}</div>
+        {%- endif -%}
 
-    <a href="{{ routes.root_url }}" class="website-header__logo">
-      {%- if logo_image -%}
-        <img
-          src="{{ logo_image | image_url: width: 400 }}"
-          srcset="{{ logo_image | image_url: width: 200 }} 200w, {{ logo_image | image_url: width: 400 }} 400w"
-          width="{{ section.settings.logo_image_width }}"
-          height="{{ section.settings.logo_image_width | divided_by: logo_image.aspect_ratio }}"
-          alt="{{ logo_image.alt | default: shop.name | escape }}"
-          class="website-header__logo-image"
-          loading="eager"
-        />
-      {%- else -%}
-        <span class="website-header__logo-text">{{ logo_text | default: shop.name }}</span>
-      {%- endif -%}
-    </a>
-  </div>
+        {% render 'cta-button',
+          show_button: show_button,
+          button_label: button_label,
+          button_link: button_link,
+          button_style: button_style,
+          button_classes_extra: 'website-header__cta'
+        %}
 
-  <div
-    id="WebsiteHeaderContent-{{ section.id }}"
-    class="website-header__content"
-    data-content
-  >
-    <div class="website-header__content-inner">
-      {%- if tagline != blank -%}
-        <div class="website-header__tagline">{{ tagline }}</div>
-      {%- endif -%}
-
-   {% render 'cta-button',
-  show_button: section.settings.show_button,
-  button_label: section.settings.button_label,
-  button_link: section.settings.button_link,
-  button_style: section.settings.button_style,
-  button_classes_extra: 'website-header__cta'
-%}
-
+      </div>
     </div>
   </div>
-</div>
 </header>
 
 {{ 'website-header.css' | asset_url | stylesheet_tag }}
@@ -106,120 +100,140 @@ data-state="closed"
 
 {% schema %}
 {
-"name": "Website Header",
-"settings": [
-  {
-    "type": "header",
-    "content": "Logo"
-  },
-  {
-    "type": "image_picker",
-    "id": "logo_image",
-    "label": "Logo image"
-  },
-  {
-    "type": "text",
-    "id": "logo_text",
-    "label": "Logo text",
-    "default": "Tisso Vison",
-    "info": "Shown when no logo image is selected"
-  },
-  {
-    "type": "range",
-    "id": "logo_image_width",
-    "min": 100,
-    "max": 200,
-    "step": 1,
-    "unit": "px",
-    "label": "Logo image width",
-    "default": 151
-  },
-  {
-    "type": "header",
-    "content": "Tagline"
-  },
-  {
-    "type": "richtext",
-    "id": "tagline",
-    "label": "Tagline",
-    "default": "<p>Find the ideal gift for your loved ones.</p>"
-  },
-  {
-  "type": "select",
-  "id": "button_style",
-  "label": "Button style",
-  "options": [
-    { "value": "primary", "label": "Primary (black)" },
-    { "value": "secondary", "label": "Secondary (yellow)" }
+  "name": "Website Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "Tisso Vison",
+      "info": "Shown when no logo image is selected"
+    },
+    {
+      "type": "range",
+      "id": "logo_image_width",
+      "min": 100,
+      "max": 200,
+      "step": 1,
+      "unit": "px",
+      "label": "Logo image width",
+      "default": 151
+    },
+    {
+      "type": "header",
+      "content": "Tagline"
+    },
+    {
+      "type": "richtext",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "<p>Find the ideal gift for your loved ones.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary", "label": "Primary (black)" },
+        { "value": "secondary", "label": "Secondary (yellow)" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between elements",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "min": 16,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "label": "Toggle-to-logo spacing (mobile bar)",
+      "default": 78
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 23
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 23
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "min": 150,
+      "max": 600,
+      "step": 50,
+      "unit": "ms",
+      "label": "Open/close animation speed",
+      "default": 350
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Stick to top of page on scroll",
+      "default": false
+    }
   ],
-  "default": "primary"
-},
-  {
-    "type": "header",
-    "content": "Layout"
-  },
-  {
-    "type": "range",
-    "id": "content_gap",
-    "min": 8,
-    "max": 48,
-    "step": 2,
-    "unit": "px",
-    "label": "Spacing between elements",
-    "default": 16
-  },
-  {
-    "type": "range",
-    "id": "logo_gap",
-    "min": 16,
-    "max": 160,
-    "step": 2,
-    "unit": "px",
-    "label": "Toggle-to-logo spacing (mobile bar)",
-    "default": 78
-  },
-  {
-    "type": "range",
-    "id": "padding_top",
-    "min": 0,
-    "max": 80,
-    "step": 1,
-    "unit": "px",
-    "label": "Top padding",
-    "default": 23
-  },
-  {
-    "type": "range",
-    "id": "padding_bottom",
-    "min": 0,
-    "max": 80,
-    "step": 1,
-    "unit": "px",
-    "label": "Bottom padding",
-    "default": 23
-  },
-  {
-    "type": "range",
-    "id": "animation_speed",
-    "min": 150,
-    "max": 600,
-    "step": 50,
-    "unit": "ms",
-    "label": "Open/close animation speed",
-    "default": 350
-  },
-
-  {
-    "type": "checkbox",
-    "id": "enable_sticky",
-    "label": "Stick to top of page on scroll",
-    "default": false
-  }
-],
-"presets": [
-  {
-    "name": "Website Header"
-  }
-]
+  "presets": [
+    {
+      "name": "Website Header"
+    }
+  ]
 }
 {% endschema %}
