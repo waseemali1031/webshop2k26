@@ -1,0 +1,194 @@
+{%- liquid
+  # Component: Hero Banner
+  # Description: Full-bleed hero image with heading/description/CTA.
+  #   Mobile: heading+description in normal flow, image below,
+  #     CTA overlaid on the bottom-left of the image.
+  #   Tablet/Desktop (>=768px): image becomes a full-bleed background,
+  #     heading+description+CTA overlay together at the bottom-left.
+  #   Spacing/typography scale fluidly via clamp() rather than fixed
+  #   per-breakpoint jumps, so tablet sits naturally between mobile
+  #   and desktop instead of snapping at 768px.
+  # Usage: Add as its own section. No JS - layout is pure CSS.
+
+  assign heading = section.settings.heading
+  assign heading_color = section.settings.heading_color
+  assign description = section.settings.description
+  assign text_color = section.settings.text_color
+  assign image_mobile = section.settings.image_mobile
+  assign image_desktop = section.settings.image_desktop
+  assign show_button = section.settings.show_button
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+  assign button_style = section.settings.button_style
+-%}
+
+<section
+  class="hero-banner"
+  data-section-id="{{ section.id }}"
+  data-component="hero-banner"
+>
+  <style>
+    .hero-banner[data-section-id="{{ section.id }}"] {
+      --hero-banner-heading-color: {{ heading_color }};
+      --hero-banner-text-color: {{ text_color }};
+      --hero-banner-mobile-ratio: {{ image_mobile.aspect_ratio | default: 0.8 }};
+      --hero-banner-desktop-ratio: {{ image_desktop.aspect_ratio | default: 2.4 }};
+    }
+  </style>
+
+  <div class="hero-banner__inner">
+
+    <div class="hero-banner__content">
+      {%- if heading != blank -%}
+        <h2 class="hero-banner__heading">{{ heading }}</h2>
+      {%- endif -%}
+
+      {%- if description != blank -%}
+        <div class="hero-banner__description">{{ description }}</div>
+      {%- endif -%}
+
+      <div class="hero-banner__cta">
+        {% render 'cta-button',
+          show_button: show_button,
+          button_label: button_label,
+          button_link: button_link,
+          button_style: button_style,
+          button_classes_extra: 'hero-banner__cta-button'
+        %}
+      </div>
+    </div>
+
+    {%- if image_mobile or image_desktop -%}
+      <div class="hero-banner__media">
+        <picture>
+          {%- if image_desktop -%}
+            <source
+              media="(min-width: 768px)"
+              srcset="
+                {{- image_desktop | image_url: width: 900 }} 900w,
+                {{ image_desktop | image_url: width: 1600 }} 1600w,
+                {{ image_desktop | image_url: width: 2400 }} 2400w"
+              sizes="100vw"
+            >
+          {%- endif -%}
+
+          {%- if image_mobile -%}
+            <img
+              class="hero-banner__image"
+              src="{{ image_mobile | image_url: width: 800 }}"
+              srcset="
+                {{- image_mobile | image_url: width: 400 }} 400w,
+                {{ image_mobile | image_url: width: 800 }} 800w,
+                {{ image_mobile | image_url: width: 1200 }} 1200w"
+              sizes="100vw"
+              alt="{{ image_mobile.alt | default: heading | escape }}"
+              width="{{ image_mobile.width }}"
+              height="{{ image_mobile.height }}"
+              loading="eager"
+            >
+          {%- else -%}
+            <img
+              class="hero-banner__image"
+              src="{{ image_desktop | image_url: width: 1600 }}"
+              alt="{{ image_desktop.alt | default: heading | escape }}"
+              width="{{ image_desktop.width }}"
+              height="{{ image_desktop.height }}"
+              loading="eager"
+            >
+          {%- endif -%}
+        </picture>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{{ 'hero-banner.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Description color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Shown below 768px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Tablet / desktop image",
+      "info": "Shown at 768px and up. Falls back to the mobile image if left blank."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary", "label": "Primary (black)" },
+        { "value": "secondary", "label": "Secondary (yellow)" }
+      ],
+      "default": "primary"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}
