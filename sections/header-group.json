@@ -43,20 +43,18 @@
       "settings": {
         "logo_image": "shopify://shop_images/logo.svg",
         "logo_text": "Tisso Vison",
-        "logo_image_width": 150,
+        "logo_image_width": 151,
         "tagline": "<p>Find the ideal gift for your loved ones1.</p>",
         "show_button": true,
         "button_label": "choose Gift1",
         "button_link": "shopify://collections/all",
         "button_style": "primary",
-        "container_width": 1380,
-        "container_padding": 20,
         "content_gap": 16,
-        "padding_top": 12,
-        "padding_bottom": 12,
+        "logo_gap": 78,
+        "padding_top": 10,
+        "padding_bottom": 10,
         "animation_speed": 350,
-        "enable_sticky": true,
-        "color_scheme": "scheme-1"
+        "enable_sticky": true
       }
     },
     "header": {
