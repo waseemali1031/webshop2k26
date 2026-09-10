@@ -1,1 +1,112 @@
-{"name":"t:sections.header.name","type":"header","sections":{"announcement-bar":{"type":"announcement-bar","blocks":{"announcement-bar-0":{"type":"announcement","settings":{"text":"Welcome to our store","link":""}}},"block_order":["announcement-bar-0"],"settings":{"auto_rotate":false,"change_slides_speed":5,"color_scheme":"scheme-1","show_line_separator":true,"show_social":false,"enable_country_selector":false,"enable_language_selector":false}},"header":{"type":"header","settings":{"logo_position":"middle-left","mobile_logo_position":"center","menu":"main-menu","menu_type_desktop":"dropdown","sticky_header_type":"on-scroll-up","show_line_separator":true,"color_scheme":"scheme-1","menu_color_scheme":"scheme-1","enable_country_selector":true,"enable_language_selector":true,"margin_bottom":0,"padding_top":20,"padding_bottom":20}}},"order":["announcement-bar","header"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-bar-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "Welcome to our store",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-bar-0"
+      ],
+      "settings": {
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "color_scheme": "scheme-1",
+        "show_line_separator": true,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "gift_guide_section_AR6iY6": {
+      "type": "gift-guide-section",
+      "name": "Gift Guide Hero",
+      "settings": {
+        "heading": "The Gift Guide1",
+        "description": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.fef",
+        "button_text": "SHOP NOW1",
+        "button_url": "",
+        "image": "shopify://shop_images/hero-bg.jpg",
+        "padding_top_mobile": 5,
+        "padding_bottom_mobile": 5,
+        "padding_side_mobile": 5,
+        "gap_mobile": 5,
+        "padding_top_tablet": 60,
+        "padding_bottom_tablet": 60,
+        "padding_side_tablet": 40,
+        "gap_tablet": 40,
+        "padding_top_desktop": 20,
+        "padding_bottom_desktop": 20,
+        "padding_side_desktop": 20,
+        "gap_desktop": 20,
+        "heading_font_family": "system-ui, -apple-system, sans-serif",
+        "heading_font_size_mobile": 28,
+        "heading_font_size_tablet": 36,
+        "heading_font_size_desktop": 48,
+        "heading_font_weight": "700",
+        "heading_color": "#000000",
+        "heading_margin_bottom": 15,
+        "description_font_family": "system-ui, -apple-system, sans-serif",
+        "description_font_size_mobile": 14,
+        "description_font_size_tablet": 16,
+        "description_color": "#333333",
+        "description_margin_bottom": 20,
+        "button_font_family": "system-ui, -apple-system, sans-serif",
+        "button_font_size_mobile": 12,
+        "button_font_size_tablet": 13,
+        "button_font_size_desktop": 14,
+        "button_font_weight": "600",
+        "button_bg_color": "#000000",
+        "button_bg_hover_color": "#333333",
+        "button_text_color": "#ffffff",
+        "button_text_hover_color": "#ffffff",
+        "button_padding_vertical": 12,
+        "button_padding_horizontal": 24,
+        "button_border_width": 0,
+        "button_border_color": "#000000",
+        "button_margin_top": 20,
+        "bg_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header",
+    "gift_guide_section_AR6iY6"
+  ]
+}
