@@ -88,26 +88,14 @@ data-state="closed"
         <div class="website-header__tagline">{{ tagline }}</div>
       {%- endif -%}
 
-      {%- liquid
-assign button_variant = button_style | default: 'primary'
-assign button_classes = 'button button--' | append: button_variant
-if button_classes_extra != blank
-  assign button_classes = button_classes | append: ' ' | append: button_classes_extra
-endif
--%}
+   {% render 'cta-button',
+  show_button: section.settings.show_button,
+  button_label: section.settings.button_label,
+  button_link: section.settings.button_link,
+  button_style: section.settings.button_style,
+  button_classes_extra: 'website-header__cta'
+%}
 
-{%- if show_button and button_label != blank -%}
-{%- if button_link != blank -%}
-  <a href="{{ button_link }}" class="{{ button_classes }}">
-{%- else -%}
-  <a href="{{ routes.root_url }}" role="link" aria-disabled="true" class="{{ button_classes }}" tabindex="-1">
-{%- endif -%}
-    <span>{{ button_label }}</span>
-    <svg class="button__icon website-header__cta-arrow" width="26" height="12" viewBox="0 0 26 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0.75 4.77298L6.72657e-08 4.77298L-6.72657e-08 6.27298L0.75 6.27298L0.75 4.77298ZM25.2803 6.05331C25.5732 5.76042 25.5732 5.28554 25.2803 4.99265L20.5074 0.219681C20.2145 -0.0732129 19.7396 -0.0732129 19.4467 0.21968C19.1538 0.512574 19.1538 0.987447 19.4467 1.28034L23.6893 5.52298L19.4467 9.76562C19.1538 10.0585 19.1538 10.5334 19.4467 10.8263C19.7396 11.1192 20.2145 11.1192 20.5074 10.8263L25.2803 6.05331ZM0.75 6.27298L24.75 6.27298L24.75 4.77298L0.75 4.77298L0.75 6.27298Z" fill="currentColor"/>
-</svg>
-  </a>
-{%- endif -%}
     </div>
   </div>
 </div>
@@ -157,36 +145,15 @@ endif
     "default": "<p>Find the ideal gift for your loved ones.</p>"
   },
   {
-    "type": "header",
-    "content": "Button"
-  },
-  {
-    "type": "checkbox",
-    "id": "show_button",
-    "label": "Show button",
-    "default": true
-  },
-  {
-    "type": "text",
-    "id": "button_label",
-    "label": "Button label",
-    "default": "Choose gift"
-  },
-  {
-    "type": "url",
-    "id": "button_link",
-    "label": "Button link"
-  },
-  {
-    "type": "select",
-    "id": "button_style",
-    "label": "Button style",
-    "options": [
-      { "value": "primary", "label": "Primary" },
-      { "value": "secondary", "label": "Secondary" }
-    ],
-    "default": "primary"
-  },
+  "type": "select",
+  "id": "button_style",
+  "label": "Button style",
+  "options": [
+    { "value": "primary", "label": "Primary (black)" },
+    { "value": "secondary", "label": "Secondary (yellow)" }
+  ],
+  "default": "primary"
+},
   {
     "type": "header",
     "content": "Layout"
@@ -241,6 +208,7 @@ endif
     "label": "Open/close animation speed",
     "default": 350
   },
+
   {
     "type": "checkbox",
     "id": "enable_sticky",
