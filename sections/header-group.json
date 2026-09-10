@@ -59,6 +59,7 @@
     },
     "header": {
       "type": "header",
+      "disabled": true,
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
@@ -75,54 +76,20 @@
         "padding_bottom": 20
       }
     },
-    "gift_guide_section_AR6iY6": {
-      "type": "gift-guide-section",
-      "name": "Gift Guide Hero",
+    "hero_banner_agU4zM": {
+      "type": "hero-banner",
+      "name": "Hero Banner",
       "settings": {
-        "heading": "The Gift Guide1",
-        "description": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.fef",
-        "button_text": "SHOP NOW1",
-        "button_url": "",
-        "image": "shopify://shop_images/hero-bg.jpg",
-        "padding_top_mobile": 5,
-        "padding_bottom_mobile": 5,
-        "padding_side_mobile": 5,
-        "gap_mobile": 5,
-        "padding_top_tablet": 60,
-        "padding_bottom_tablet": 60,
-        "padding_side_tablet": 40,
-        "gap_tablet": 40,
-        "padding_top_desktop": 20,
-        "padding_bottom_desktop": 20,
-        "padding_side_desktop": 20,
-        "gap_desktop": 20,
-        "heading_font_family": "system-ui, -apple-system, sans-serif",
-        "heading_font_size_mobile": 28,
-        "heading_font_size_tablet": 36,
-        "heading_font_size_desktop": 48,
-        "heading_font_weight": "700",
+        "heading": "The Gift Guide",
         "heading_color": "#000000",
-        "heading_margin_bottom": 15,
-        "description_font_family": "system-ui, -apple-system, sans-serif",
-        "description_font_size_mobile": 14,
-        "description_font_size_tablet": 16,
-        "description_color": "#333333",
-        "description_margin_bottom": 20,
-        "button_font_family": "system-ui, -apple-system, sans-serif",
-        "button_font_size_mobile": 12,
-        "button_font_size_tablet": 13,
-        "button_font_size_desktop": 14,
-        "button_font_weight": "600",
-        "button_bg_color": "#000000",
-        "button_bg_hover_color": "#333333",
-        "button_text_color": "#ffffff",
-        "button_text_hover_color": "#ffffff",
-        "button_padding_vertical": 12,
-        "button_padding_horizontal": 24,
-        "button_border_width": 0,
-        "button_border_color": "#000000",
-        "button_margin_top": 20,
-        "bg_color": "#ffffff"
+        "description": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>",
+        "text_color": "#000000",
+        "image_mobile": "shopify://shop_images/hero-bg.jpg",
+        "image_desktop": "shopify://shop_images/hero-bg.jpg",
+        "show_button": true,
+        "button_label": "Shop Now",
+        "button_link": "shopify://collections/all",
+        "button_style": "primary"
       }
     }
   },
@@ -130,6 +97,6 @@
     "announcement-bar",
     "website_header_yN6rbA",
     "header",
-    "gift_guide_section_AR6iY6"
+    "hero_banner_agU4zM"
   ]
 }
