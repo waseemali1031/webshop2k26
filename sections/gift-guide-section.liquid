@@ -1,0 +1,638 @@
+{%- style -%}
+  .gift-guide-section {
+    padding: {{ section.settings.padding_top_mobile }}px {{ section.settings.padding_side_mobile }}px {{ section.settings.padding_bottom_mobile }}px {{ section.settings.padding_side_mobile }}px;
+    background-color: {{ section.settings.bg_color }};
+    overflow: hidden;
+  }
+
+  .gift-guide-container {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.gap_mobile }}px;
+    align-items: center;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .gift-guide-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    order: 2;
+    width: 100%;
+  }
+
+  .gift-guide-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    order: 1;
+    width: 100%;
+  }
+
+  .gift-guide-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+  }
+
+  .gift-guide-heading {
+    font-size: {{ section.settings.heading_font_size_mobile }}px;
+    font-weight: {{ section.settings.heading_font_weight }};
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 {{ section.settings.heading_margin_bottom }}px 0;
+    line-height: 1.2;
+    font-family: {{ section.settings.heading_font_family }};
+  }
+
+  .gift-guide-description {
+    font-size: {{ section.settings.description_font_size_mobile }}px;
+    color: {{ section.settings.description_color }};
+    margin: 0 0 {{ section.settings.description_margin_bottom }}px 0;
+    line-height: 1.6;
+    font-family: {{ section.settings.description_font_family }};
+  }
+
+  .gift-guide-button-wrapper {
+    display: inline-block;
+    margin-top: {{ section.settings.button_margin_top }}px;
+  }
+
+  .gift-guide-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    text-decoration: none;
+    font-size: {{ section.settings.button_font_size_mobile }}px;
+    font-weight: {{ section.settings.button_font_weight }};
+    border: {{ section.settings.button_border_width }}px solid {{ section.settings.button_border_color }};
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: {{ section.settings.button_font_family }};
+  }
+
+  .gift-guide-button:hover {
+    background-color: {{ section.settings.button_bg_hover_color }};
+    color: {{ section.settings.button_text_hover_color }};
+  }
+
+  .gift-guide-button-arrow {
+    display: inline-block;
+    font-size: {{ section.settings.button_font_size_mobile }}px;
+  }
+
+  /* Tablet Styles */
+  @media (min-width: 768px) {
+    .gift-guide-section {
+      padding: {{ section.settings.padding_top_tablet }}px {{ section.settings.padding_side_tablet }}px {{ section.settings.padding_bottom_tablet }}px {{ section.settings.padding_side_tablet }}px;
+    }
+
+    .gift-guide-container {
+      flex-direction: row;
+      gap: {{ section.settings.gap_tablet }}px;
+    }
+
+    .gift-guide-content {
+      order: 1;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .gift-guide-image-wrapper {
+      order: 2;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .gift-guide-heading {
+      font-size: {{ section.settings.heading_font_size_tablet }}px;
+    }
+
+    .gift-guide-description {
+      font-size: {{ section.settings.description_font_size_tablet }}px;
+    }
+
+    .gift-guide-button {
+      font-size: {{ section.settings.button_font_size_tablet }}px;
+    }
+  }
+
+  /* Desktop Styles */
+  @media (min-width: 1024px) {
+    .gift-guide-section {
+      padding: {{ section.settings.padding_top_desktop }}px {{ section.settings.padding_side_desktop }}px {{ section.settings.padding_bottom_desktop }}px {{ section.settings.padding_side_desktop }}px;
+    }
+
+    .gift-guide-container {
+      flex-direction: row;
+      gap: {{ section.settings.gap_desktop }}px;
+    }
+
+    .gift-guide-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .gift-guide-image-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .gift-guide-heading {
+      font-size: {{ section.settings.heading_font_size_desktop }}px;
+    }
+
+    .gift-guide-description {
+      font-size: {{ section.settings.description_font_size_desktop }}px;
+    }
+
+    .gift-guide-button {
+      font-size: {{ section.settings.button_font_size_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="gift-guide-section">
+  <div class="gift-guide-container">
+    <!-- Content Section -->
+    <div class="gift-guide-content">
+      {% if section.settings.heading %}
+        <h1 class="gift-guide-heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+
+      {% if section.settings.description %}
+        <p class="gift-guide-description">{{ section.settings.description }}</p>
+      {% endif %}
+
+      {% if section.settings.button_text %}
+        <div class="gift-guide-button-wrapper">
+          <a href="{{ section.settings.button_url }}" class="gift-guide-button">
+            <span>{{ section.settings.button_text }}</span>
+            <span class="gift-guide-button-arrow">→</span>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Image Section -->
+    <div class="gift-guide-image-wrapper">
+      {% if section.settings.image %}
+        {{ section.settings.image | image_url: width: 1000 | image_tag: class: 'gift-guide-image', alt: section.settings.image.alt }}
+      {% else %}
+        <div style="background-color: #f0f0f0; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #999;">
+          Image not selected
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Gift Guide Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Section Image"
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_side_mobile",
+      "label": "Side Padding (Mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Gap Between Content & Image (Mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Tablet"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_tablet",
+      "label": "Top Padding (Tablet)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_tablet",
+      "label": "Bottom Padding (Tablet)",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_side_tablet",
+      "label": "Side Padding (Tablet)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "gap_tablet",
+      "label": "Gap Between Content & Image (Tablet)",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Spacing - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top Padding (Desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom Padding (Desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_side_desktop",
+      "label": "Side Padding (Desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Gap Between Content & Image (Desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Typography - Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "options": [
+        { "value": "system-ui, -apple-system, sans-serif", "label": "System Font" },
+        { "value": "Georgia, serif", "label": "Georgia (Serif)" },
+        { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+        { "value": "Helvetica, Arial, sans-serif", "label": "Helvetica" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" }
+      ],
+      "default": "system-ui, -apple-system, sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_mobile",
+      "label": "Heading Font Size (Mobile)",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_tablet",
+      "label": "Heading Font Size (Tablet)",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_desktop",
+      "label": "Heading Font Size (Desktop)",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading Font Weight",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra Bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "label": "Heading Bottom Margin",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Typography - Description"
+    },
+    {
+      "type": "select",
+      "id": "description_font_family",
+      "label": "Description Font Family",
+      "options": [
+        { "value": "system-ui, -apple-system, sans-serif", "label": "System Font" },
+        { "value": "Georgia, serif", "label": "Georgia (Serif)" },
+        { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+        { "value": "Helvetica, Arial, sans-serif", "label": "Helvetica" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" }
+      ],
+      "default": "system-ui, -apple-system, sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_mobile",
+      "label": "Description Font Size (Mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_tablet",
+      "label": "Description Font Size (Tablet)",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "description_margin_bottom",
+      "label": "Description Bottom Margin",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Button Styling"
+    },
+    {
+      "type": "select",
+      "id": "button_font_family",
+      "label": "Button Font Family",
+      "options": [
+        { "value": "system-ui, -apple-system, sans-serif", "label": "System Font" },
+        { "value": "Georgia, serif", "label": "Georgia (Serif)" },
+        { "value": "Helvetica, Arial, sans-serif", "label": "Helvetica" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" }
+      ],
+      "default": "system-ui, -apple-system, sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "label": "Button Font Size (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_tablet",
+      "label": "Button Font Size (Tablet)",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_desktop",
+      "label": "Button Font Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button Font Weight",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_hover_color",
+      "label": "Button Background Hover Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_hover_color",
+      "label": "Button Text Hover Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Button Vertical Padding",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Button Horizontal Padding",
+      "min": 12,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Button Border Width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_margin_top",
+      "label": "Button Top Margin",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Guide Hero"
+    }
+  ]
+}
+{% endschema %}
