@@ -1,14 +1,102 @@
-.button{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-gap:20px;
-text-decoration:none;
+/* ===================================
+   BUTTON COMPONENT
+   Source: Figma "Test for Candidates"
+     Design:    node-id 1-1590
+     Prototype: node-id 1-1588
+   Variants: --primary (black, inverts to yellow on hover)
+             --secondary (yellow, inverts to black on hover)
+   =================================== */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
 }
-.button__icon{
-transition:transform .3s ease;
+
+.button__icon {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
 }
+
+/* Icon slides right on hover/focus — same for both variants.
+   Requires the icon SVG to use stroke/fill="currentColor" so it
+   recolors automatically when .button's color changes. */
 .button:hover .button__icon,
-.button:focus-visible .button__icon{
-transform:translateX(4px);
+.button:focus-visible .button__icon {
+  transform: translateX(4px);
+}
+
+/* Keyboard focus state */
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* -------------------------
+   PRIMARY
+   Default: black bg / white text+icon
+   Hover:   yellow bg / black text+icon + lift shadow
+   ------------------------- */
+
+.button--primary {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.button--primary:hover,
+.button--primary:focus-visible {
+  background-color: #fff544;
+  color: #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* -------------------------
+   SECONDARY
+   Default: yellow bg / black text+icon + resting shadow
+   Hover:   black bg / white text+icon + deeper shadow
+   ------------------------- */
+
+.button--secondary {
+  background-color: #fff544;
+  color: #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.button--secondary:hover,
+.button--secondary:focus-visible {
+  background-color: #000000;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+}
+
+/* -------------------------
+   DISABLED (both variants)
+   ------------------------- */
+
+.button:disabled,
+.button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* -------------------------
+   ACCESSIBILITY: reduced motion
+   ------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button__icon {
+    transition: none;
+  }
 }
