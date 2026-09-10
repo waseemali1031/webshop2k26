@@ -206,30 +206,6 @@
   margin: 0;
 }
 
-/* CTA: layout/spacing only - color, border, radius and shadow are
-   inherited untouched from the theme's .button / .button--secondary. */
-
-.website-header__cta {
-  gap: 0.6rem;
-}
-
-.website-header__cta[aria-disabled='true'] {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-.website-header__cta-arrow {
-  width: 1.6rem;
-  height: 1.6rem;
-  flex: 0 0 auto;
-  transition: transform var(--website-header-duration) var(--website-header-ease);
-}
-
-@media (hover: hover) {
-  .website-header__cta:hover .website-header__cta-arrow {
-    transform: translateX(3px);
-  }
-}
 
 /* Sticky */
 
@@ -313,10 +289,6 @@
     padding-top: 0;
   }
 
-  .website-header__cta {
-    grid-column: 3;
-    justify-self: end;
-  }
 }
 
 @media (min-width: 1280px) {
@@ -331,9 +303,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .website-header__content,
-  .website-header__content-inner,
-  .website-header__icon-bar,
-  .website-header__cta-arrow {
+  .website-header__content-inner {
     transition: none;
   }
 }

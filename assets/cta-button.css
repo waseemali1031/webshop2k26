@@ -1,105 +1,109 @@
 /* ===================================
-   CTA BUTTON COMPONENT
-   Source: Figma "Test for Candidates"
-     Design:    node-id 1-1590
-     Prototype: node-id 1-1588
-   Namespaced as .cta-button to avoid colliding with
-   theme-native .button / .button--primary classes.
-   Variants: --primary (black, inverts to yellow on hover)
-             --secondary (yellow, inverts to black on hover)
-   =================================== */
+  CTA BUTTON COMPONENT
+  Source: Figma "Test for Candidates"
+    Design:    node-id 1-1590
+    Prototype: node-id 1-1588
+  Namespaced as .cta-button to avoid colliding with
+  theme-native .button / .button--primary classes.
+  Variants: --primary (black, inverts to yellow on hover)
+            --secondary (yellow, inverts to black on hover)
+  =================================== */
 
 .cta-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  text-decoration: none;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    box-shadow 0.3s ease;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 16px;
+text-decoration: none;
+border: none;
+border-radius: 0;
+cursor: pointer;
+transition:
+  background-color 0.3s ease,
+  color 0.3s ease,
+  box-shadow 0.3s ease;
+  padding: 10px 20px;
 }
 
 .cta-button__icon {
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
+flex-shrink: 0;
+transition: transform 0.3s ease;
+display: inline-flex;
+width: 26px;
+height: 12px;
 }
 
 /* Icon slides right on hover/focus — same for both variants.
-   Requires the icon SVG to use stroke/fill="currentColor" so it
-   recolors automatically when .cta-button's color changes. */
+  Requires the icon SVG to use stroke/fill="currentColor" so it
+  recolors automatically when .cta-button's color changes. */
 .cta-button:hover .cta-button__icon,
 .cta-button:focus-visible .cta-button__icon {
-  transform: translateX(4px);
+transform: translateX(4px);
 }
 
 /* Keyboard focus state */
 .cta-button:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+outline: 2px solid currentColor;
+outline-offset: 2px;
 }
 
 /* -------------------------
-   PRIMARY (default)
-   Default: black bg / white text+icon
-   Hover:   yellow bg / black text+icon + lift shadow
-   ------------------------- */
+  PRIMARY (default)
+  Default: black bg / white text+icon
+  Hover:   yellow bg / black text+icon + lift shadow
+  ------------------------- */
 
 .cta-button--primary {
-  background-color: #000000;
-  color: #ffffff;
+background-color: #000000;
+color: #ffffff;
 }
 
 .cta-button--primary:hover,
 .cta-button--primary:focus-visible {
-  background-color: #fff544;
-  color: #000000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+background-color: #fff544;
+color: #000000;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
 /* -------------------------
-   SECONDARY
-   Default: yellow bg / black text+icon + resting shadow
-   Hover:   black bg / white text+icon + deeper shadow
-   ------------------------- */
+  SECONDARY
+  Default: yellow bg / black text+icon + resting shadow
+  Hover:   black bg / white text+icon + deeper shadow
+  ------------------------- */
 
 .cta-button--secondary {
-  background-color: #fff544;
-  color: #000000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+background-color: #fff544;
+color: #000000;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .cta-button--secondary:hover,
 .cta-button--secondary:focus-visible {
-  background-color: #000000;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+background-color: #000000;
+color: #ffffff;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
 }
 
 /* -------------------------
-   DISABLED (both variants)
-   ------------------------- */
+  DISABLED (both variants)
+  ------------------------- */
 
 .cta-button:disabled,
 .cta-button[disabled],
 .cta-button[aria-disabled="true"] {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
-  box-shadow: none;
+opacity: 0.5;
+cursor: not-allowed;
+pointer-events: none;
+box-shadow: none;
 }
 
 /* -------------------------
-   ACCESSIBILITY: reduced motion
-   ------------------------- */
+  ACCESSIBILITY: reduced motion
+  ------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .cta-button,
-  .cta-button__icon {
-    transition: none;
-  }
+.cta-button,
+.cta-button__icon {
+  transition: none;
+}
 }
