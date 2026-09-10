@@ -18,6 +18,7 @@ text-decoration: none;
 border: none;
 border-radius: 0;
 cursor: pointer;
+text-transform: uppercase;
 transition:
   background-color 0.3s ease,
   color 0.3s ease,
