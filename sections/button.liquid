@@ -4,6 +4,21 @@
   # Features: Icon support, custom hover states, responsive sizing
 -%}
 
+{{ 'button.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .section-button {
+    --btn-primary-bg: {{ section.settings.primary_bg_color }};
+    --btn-primary-text: {{ section.settings.primary_text_color }};
+    --btn-primary-hover-bg: {{ section.settings.primary_hover_bg }};
+    --btn-primary-hover-text: {{ section.settings.primary_hover_text }};
+    --btn-secondary-bg: {{ section.settings.secondary_bg_color }};
+    --btn-secondary-text: {{ section.settings.secondary_text_color }};
+    --btn-secondary-hover-bg: {{ section.settings.secondary_hover_bg }};
+    --btn-secondary-hover-text: {{ section.settings.secondary_hover_text }};
+  }
+</style>
+
 <div class="section-button" data-section-id="{{ section.id }}">
   
   {%- if section.settings.show_button -%}
@@ -32,11 +47,9 @@
 
 </div>
 
-{{ 'button.css' | asset_url | stylesheet_tag }}
-
 {% schema %}
 {
-  "name": "Button",
+  "name": "Custom Button",
   "settings": [
     {
       "type": "checkbox",
@@ -136,14 +149,14 @@
   ],
   "presets": [
     {
-      "name": "Button - Primary",
+      "name": "Custom Button - Primary",
       "settings": {
         "button_text": "Shop Now",
         "button_style": "primary"
       }
     },
     {
-      "name": "Button - Secondary",
+      "name": "Custom Button - Secondary",
       "settings": {
         "button_text": "Choose Gift",
         "button_style": "secondary"
