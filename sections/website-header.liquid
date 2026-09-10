@@ -21,7 +21,7 @@
     assign button_classes = 'button button--secondary website-header__cta'
   endif
 
-  assign section_classes = 'section-website-header website-header color-' | append: section.settings.color_scheme
+  assign section_classes = 'section-website-header website-header'
   if enable_sticky
     assign section_classes = section_classes | append: ' website-header--sticky'
   endif
@@ -35,9 +35,8 @@
 >
   <style>
     .website-header[data-section-id="{{ section.id }}"] {
-      --website-header-max-width: {{ section.settings.container_width }}px;
-      --website-header-side-padding: {{ section.settings.container_padding }}px;
       --website-header-gap: {{ section.settings.content_gap }}px;
+      --website-header-logo-gap: {{ section.settings.logo_gap }}px;
       --website-header-padding-top: {{ section.settings.padding_top }}px;
       --website-header-padding-bottom: {{ section.settings.padding_bottom }}px;
       --website-header-duration: {{ section.settings.animation_speed }}ms;
@@ -45,7 +44,7 @@
     }
   </style>
 
-  <div class="website-header__container">
+  <div class="website-header__container page-width">
     <div class="website-header__bar">
       <button
         type="button"
@@ -55,15 +54,9 @@
         aria-controls="WebsiteHeaderContent-{{ section.id }}"
       >
         <span class="website-header__icon-wrap" aria-hidden="true">
-          <svg class="website-header__icon website-header__icon--menu" viewBox="0 0 24 24" fill="none">
-            <path d="M3 6H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M3 12H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M3 18H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          <svg class="website-header__icon website-header__icon--close" viewBox="0 0 24 24" fill="none">
-            <path d="M5 5L19 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M19 5L5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
+          <span class="website-header__icon-bar website-header__icon-bar--top"></span>
+          <span class="website-header__icon-bar website-header__icon-bar--middle"></span>
+          <span class="website-header__icon-bar website-header__icon-bar--bottom"></span>
         </span>
         <span class="visually-hidden">{{ 'website_header.toggle_menu' | t: default: 'Menu' }}</span>
       </button>
@@ -193,26 +186,6 @@
     },
     {
       "type": "range",
-      "id": "container_width",
-      "min": 960,
-      "max": 1600,
-      "step": 10,
-      "unit": "px",
-      "label": "Container max width",
-      "default": 1240
-    },
-    {
-      "type": "range",
-      "id": "container_padding",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "label": "Container side padding",
-      "default": 20
-    },
-    {
-      "type": "range",
       "id": "content_gap",
       "min": 8,
       "max": 48,
@@ -223,23 +196,33 @@
     },
     {
       "type": "range",
+      "id": "logo_gap",
+      "min": 16,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "label": "Toggle-to-logo spacing (mobile bar)",
+      "default": 78
+    },
+    {
+      "type": "range",
       "id": "padding_top",
       "min": 0,
       "max": 80,
-      "step": 4,
+      "step": 1,
       "unit": "px",
       "label": "Top padding",
-      "default": 16
+      "default": 23
     },
     {
       "type": "range",
       "id": "padding_bottom",
       "min": 0,
       "max": 80,
-      "step": 4,
+      "step": 1,
       "unit": "px",
       "label": "Bottom padding",
-      "default": 16
+      "default": 23
     },
     {
       "type": "range",
@@ -256,16 +239,6 @@
       "id": "enable_sticky",
       "label": "Stick to top of page on scroll",
       "default": false
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
     }
   ],
   "presets": [

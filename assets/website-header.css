@@ -10,19 +10,21 @@
    ------------------------- */
 
 .website-header {
-  --website-header-max-width: 1240px;
-  --website-header-side-padding: 20px;
   --website-header-gap: 16px;
-  --website-header-padding-top: 16px;
-  --website-header-padding-bottom: 16px;
+  --website-header-logo-gap: 78px;
+  --website-header-padding-top: 23px;
+  --website-header-padding-bottom: 23px;
   --website-header-duration: 350ms;
   --website-header-logo-width: 120px;
+  /* Pronounced "ease-out" curve (matches Figma's Smart Animate default
+     more closely than the browser's built-in `ease`) - fast start,
+     gentle settle, used for the toggle icon and the collapsible panel. */
+  --website-header-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   width: 100%;
-  /* Background/text colors come from the theme's color scheme system
-     (the .color-scheme-N class Shopify generates from settings_schema),
-     not from this file - pick the scheme in the section's "Colors"
-     setting to change them. */
+  /* No color-scheme picker on this section - it inherits the theme's
+     global/default color scheme variables (--color-background,
+     --color-foreground), same as the rest of the page. */
   background-color: rgb(var(--color-background));
   color: rgb(var(--color-foreground));
 }
@@ -32,10 +34,12 @@
 }
 
 .website-header__container {
-  width: 100%;
-  max-width: var(--website-header-max-width);
-  margin: 0 auto;
-  padding: var(--website-header-padding-top) var(--website-header-side-padding) var(--website-header-padding-bottom);
+  /* Max-width, centering and left/right padding come entirely from the
+     theme's own .page-width utility class (applied in the markup) so
+     this component always matches the store's global layout width -
+     this file only adds the (still editable) top/bottom padding. */
+  padding-top: var(--website-header-padding-top);
+  padding-bottom: var(--website-header-padding-bottom);
 }
 
 /* Bar: toggle + logo */
@@ -43,7 +47,7 @@
 .website-header__bar {
   display: flex;
   align-items: center;
-  gap: var(--website-header-gap);
+  gap: var(--website-header-logo-gap);
 }
 
 .website-header__toggle {
@@ -74,51 +78,60 @@
   height: 24px;
 }
 
-.website-header__icon {
+/* Classic 3-bar hamburger <-> close morph: the top and bottom bars
+   rotate and slide to meet in the middle to form an X, the middle bar
+   fades out - each bar animates on its own transform/opacity rather
+   than cross-fading two separate icon graphics, so it reads as one
+   shape morphing instead of one icon swapping for another. */
+
+.website-header__icon-bar {
   position: absolute;
-  top: 0;
   left: 0;
-  width: 24px;
-  height: 24px;
-  transition: opacity var(--website-header-duration) ease, transform var(--website-header-duration) ease;
+  right: 0;
+  height: 1.5px;
+  background-color: currentColor;
+  border-radius: 1px;
+  transition: transform var(--website-header-duration) var(--website-header-ease),
+    opacity var(--website-header-duration) var(--website-header-ease);
 }
 
-.website-header__icon--menu {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
+.website-header__icon-bar--top {
+  top: 6px;
 }
 
-.website-header__icon--close {
+.website-header__icon-bar--middle {
+  top: 12px;
+}
+
+.website-header__icon-bar--bottom {
+  top: 18px;
+}
+
+.website-header__toggle[aria-expanded='true'] .website-header__icon-bar--top {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.website-header__toggle[aria-expanded='true'] .website-header__icon-bar--middle {
   opacity: 0;
-  transform: rotate(-45deg) scale(0.5);
 }
 
-.website-header__toggle[aria-expanded='true'] .website-header__icon--menu {
-  opacity: 0;
-  transform: rotate(45deg) scale(0.5);
+.website-header__toggle[aria-expanded='true'] .website-header__icon-bar--bottom {
+  transform: translateY(-6px) rotate(-45deg);
 }
 
-.website-header__toggle[aria-expanded='true'] .website-header__icon--close {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-
-/* Logo: centered between the toggle button and a matching invisible
-   spacer so it stays visually centered on mobile. */
+/* Logo: sits left-packed right after the toggle (matches the Figma
+   spec exactly - fixed left inset + gap, not centered). flex:1 lets
+   it absorb the remaining row width so very long logo text truncates
+   with the ellipsis below instead of overflowing/causing scroll,
+   without visually changing where the text starts. */
 
 .website-header__logo {
   flex: 1 1 auto;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   text-decoration: none;
   color: inherit;
   min-width: 0;
-}
-
-.website-header__logo::after {
-  content: '';
-  width: 24px;
-  flex: 0 0 auto;
 }
 
 .website-header__logo-text {
@@ -151,8 +164,9 @@
      not on .website-header__content-inner below - padding on the
      overflow:hidden inner element would keep contributing to its size
      even at 0fr and stop the row from ever truly collapsing to 0. */
-  transition: grid-template-rows var(--website-header-duration) ease, opacity var(--website-header-duration) ease,
-    padding-top var(--website-header-duration) ease;
+  transition: grid-template-rows var(--website-header-duration) var(--website-header-ease),
+    opacity var(--website-header-duration) var(--website-header-ease),
+    padding-top var(--website-header-duration) var(--website-header-ease);
 }
 
 .website-header[data-state='open'] .website-header__content {
@@ -169,6 +183,16 @@
   align-items: center;
   gap: var(--website-header-gap);
   text-align: center;
+  /* Small slide-in alongside the parent's height/opacity animation, so
+     the tagline + CTA ease into place rather than simply appearing
+     once the row has room - closer to how Figma's Smart Animate moves
+     newly-revealed layers into position. */
+  transform: translateY(-6px);
+  transition: transform var(--website-header-duration) var(--website-header-ease);
+}
+
+.website-header[data-state='open'] .website-header__content-inner {
+  transform: translateY(0);
 }
 
 .website-header__tagline {
@@ -198,7 +222,7 @@
   width: 1.6rem;
   height: 1.6rem;
   flex: 0 0 auto;
-  transition: transform var(--website-header-duration) ease;
+  transition: transform var(--website-header-duration) var(--website-header-ease);
 }
 
 @media (hover: hover) {
@@ -266,12 +290,7 @@
 
   .website-header__logo {
     flex: 0 0 auto;
-    justify-content: flex-start;
     grid-column: 1;
-  }
-
-  .website-header__logo::after {
-    content: none;
   }
 
   /* Unwrap the collapsible panel so its children become direct grid
@@ -312,7 +331,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .website-header__content,
-  .website-header__icon,
+  .website-header__content-inner,
+  .website-header__icon-bar,
   .website-header__cta-arrow {
     transition: none;
   }
