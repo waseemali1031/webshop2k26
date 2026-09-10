@@ -1,13 +1,15 @@
 /* ===================================
-   BUTTON COMPONENT
+   CTA BUTTON COMPONENT
    Source: Figma "Test for Candidates"
      Design:    node-id 1-1590
      Prototype: node-id 1-1588
+   Namespaced as .cta-button to avoid colliding with
+   theme-native .button / .button--primary classes.
    Variants: --primary (black, inverts to yellow on hover)
              --secondary (yellow, inverts to black on hover)
    =================================== */
 
-.button {
+.cta-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -22,38 +24,38 @@
     box-shadow 0.3s ease;
 }
 
-.button__icon {
+.cta-button__icon {
   flex-shrink: 0;
   transition: transform 0.3s ease;
 }
 
 /* Icon slides right on hover/focus — same for both variants.
    Requires the icon SVG to use stroke/fill="currentColor" so it
-   recolors automatically when .button's color changes. */
-.button:hover .button__icon,
-.button:focus-visible .button__icon {
+   recolors automatically when .cta-button's color changes. */
+.cta-button:hover .cta-button__icon,
+.cta-button:focus-visible .cta-button__icon {
   transform: translateX(4px);
 }
 
 /* Keyboard focus state */
-.button:focus-visible {
+.cta-button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
 
 /* -------------------------
-   PRIMARY
+   PRIMARY (default)
    Default: black bg / white text+icon
    Hover:   yellow bg / black text+icon + lift shadow
    ------------------------- */
 
-.button--primary {
+.cta-button--primary {
   background-color: #000000;
   color: #ffffff;
 }
 
-.button--primary:hover,
-.button--primary:focus-visible {
+.cta-button--primary:hover,
+.cta-button--primary:focus-visible {
   background-color: #fff544;
   color: #000000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
@@ -65,14 +67,14 @@
    Hover:   black bg / white text+icon + deeper shadow
    ------------------------- */
 
-.button--secondary {
+.cta-button--secondary {
   background-color: #fff544;
   color: #000000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-.button--secondary:hover,
-.button--secondary:focus-visible {
+.cta-button--secondary:hover,
+.cta-button--secondary:focus-visible {
   background-color: #000000;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
@@ -82,8 +84,9 @@
    DISABLED (both variants)
    ------------------------- */
 
-.button:disabled,
-.button[disabled] {
+.cta-button:disabled,
+.cta-button[disabled],
+.cta-button[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
@@ -95,9 +98,8 @@
    ------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .button,
-  .button__icon {
+  .cta-button,
+  .cta-button__icon {
     transition: none;
   }
 }
-

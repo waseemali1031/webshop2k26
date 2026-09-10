@@ -1,0 +1,42 @@
+{%- comment -%}
+  Snippet: cta-button
+  Description: Renders a CTA link/button with primary or secondary
+    color treatment and an animated arrow icon (see cta-button.css).
+  Usage:
+    {% render 'cta-button',
+      show_button: true,
+      button_label: 'Shop Now',
+      button_link: '/collections/all',
+      button_style: 'primary',
+      button_classes_extra: 'website-header__cta'
+    %}
+
+  Params:
+    show_button          {boolean}  Required. Whether to render anything at all.
+    button_label         {string}   Required. Visible label text.
+    button_link          {string}   Optional. If blank, renders a disabled placeholder link.
+    button_style         {string}   Optional. 'primary' (default) or 'secondary'.
+    button_classes_extra {string}   Optional. Extra class(es) for section-specific layout overrides.
+{%- endcomment -%}
+
+{%- liquid
+  assign cta_variant = button_style | default: 'primary'
+  assign cta_classes = 'cta-button cta-button--' | append: cta_variant
+  if button_classes_extra != blank
+    assign cta_classes = cta_classes | append: ' ' | append: button_classes_extra
+  endif
+-%}
+
+{%- if show_button and button_label != blank -%}
+  {%- if button_link != blank -%}
+    <a href="{{ button_link }}" class="{{ cta_classes }}">
+  {%- else -%}
+    <a href="{{ routes.root_url }}" role="link" aria-disabled="true" class="{{ cta_classes }}" tabindex="-1">
+  {%- endif -%}
+      <span>{{ button_label }}</span>
+      <svg class="cta-button__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 12H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M14 6L20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+{%- endif -%}
