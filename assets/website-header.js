@@ -140,3 +140,4 @@ if (document.readyState === 'loading') {
 // re-rendered, and clean up listeners when it's removed.
 document.addEventListener('shopify:section:load', (event) => initWebsiteHeader(event.target));
 document.addEventListener('shopify:section:unload', (event) => destroyWebsiteHeader(event.target));
+
