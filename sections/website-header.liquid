@@ -1,0 +1,277 @@
+{%- liquid
+  # Component: Website Header
+  # Description: Mobile-first website header. Collapses to a logo + toggle bar
+  #   on mobile (tap to reveal tagline + CTA with a smooth height/opacity transition),
+  #   and shows logo, tagline and CTA inline in a single row from desktop up.
+  # Usage: Add as its own section (e.g. above or as part of the header group).
+  #   CTA color/border/shape comes entirely from the theme's existing .button /
+  #   .button--secondary classes - this file does not restyle them.
+
+  assign logo_image = section.settings.logo_image
+  assign logo_text = section.settings.logo_text
+  assign tagline = section.settings.tagline
+  assign show_button = section.settings.show_button
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+  assign button_style = section.settings.button_style
+  assign enable_sticky = section.settings.enable_sticky
+
+  assign button_classes = 'button website-header__cta'
+  if button_style == 'secondary'
+    assign button_classes = 'button button--secondary website-header__cta'
+  endif
+
+  assign section_classes = 'section-website-header website-header color-' | append: section.settings.color_scheme
+  if enable_sticky
+    assign section_classes = section_classes | append: ' website-header--sticky'
+  endif
+-%}
+
+<header
+  class="{{ section_classes }}"
+  data-section-id="{{ section.id }}"
+  data-component="website-header"
+  data-state="closed"
+>
+  <style>
+    .website-header[data-section-id="{{ section.id }}"] {
+      --website-header-max-width: {{ section.settings.container_width }}px;
+      --website-header-side-padding: {{ section.settings.container_padding }}px;
+      --website-header-gap: {{ section.settings.content_gap }}px;
+      --website-header-padding-top: {{ section.settings.padding_top }}px;
+      --website-header-padding-bottom: {{ section.settings.padding_bottom }}px;
+      --website-header-duration: {{ section.settings.animation_speed }}ms;
+      --website-header-logo-width: {{ section.settings.logo_image_width }}px;
+    }
+  </style>
+
+  <div class="website-header__container">
+    <div class="website-header__bar">
+      <button
+        type="button"
+        class="website-header__toggle"
+        data-action="toggle"
+        aria-expanded="false"
+        aria-controls="WebsiteHeaderContent-{{ section.id }}"
+      >
+        <span class="website-header__icon-wrap" aria-hidden="true">
+          <svg class="website-header__icon website-header__icon--menu" viewBox="0 0 24 24" fill="none">
+            <path d="M3 6H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M3 12H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M3 18H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <svg class="website-header__icon website-header__icon--close" viewBox="0 0 24 24" fill="none">
+            <path d="M5 5L19 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19 5L5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="visually-hidden">{{ 'website_header.toggle_menu' | t: default: 'Menu' }}</span>
+      </button>
+
+      <a href="{{ routes.root_url }}" class="website-header__logo">
+        {%- if logo_image -%}
+          <img
+            src="{{ logo_image | image_url: width: 400 }}"
+            srcset="{{ logo_image | image_url: width: 200 }} 200w, {{ logo_image | image_url: width: 400 }} 400w"
+            width="{{ section.settings.logo_image_width }}"
+            height="{{ section.settings.logo_image_width | divided_by: logo_image.aspect_ratio }}"
+            alt="{{ logo_image.alt | default: shop.name | escape }}"
+            class="website-header__logo-image"
+            loading="eager"
+          />
+        {%- else -%}
+          <span class="website-header__logo-text">{{ logo_text | default: shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <div
+      id="WebsiteHeaderContent-{{ section.id }}"
+      class="website-header__content"
+      data-content
+    >
+      <div class="website-header__content-inner">
+        {%- if tagline != blank -%}
+          <div class="website-header__tagline">{{ tagline }}</div>
+        {%- endif -%}
+
+        {%- if show_button and button_label != blank -%}
+          {%- if button_link != blank -%}
+            <a href="{{ button_link }}" class="{{ button_classes }}" tabindex="-1">
+          {%- else -%}
+            <a href="{{ routes.root_url }}" role="link" aria-disabled="true" class="{{ button_classes }}" tabindex="-1">
+          {%- endif -%}
+              <span>{{ button_label }}</span>
+              <svg class="website-header__cta-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 12H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M14 6L20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</header>
+
+{{ 'website-header.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'website-header.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Website Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "Tisso Vison",
+      "info": "Shown when no logo image is selected"
+    },
+    {
+      "type": "range",
+      "id": "logo_image_width",
+      "min": 60,
+      "max": 220,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo image width",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Tagline"
+    },
+    {
+      "type": "richtext",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "<p>Find the ideal gift for your loved ones.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Choose gift"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 960,
+      "max": 1600,
+      "step": 10,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 1240
+    },
+    {
+      "type": "range",
+      "id": "container_padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Container side padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between elements",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "min": 150,
+      "max": 600,
+      "step": 50,
+      "unit": "ms",
+      "label": "Open/close animation speed",
+      "default": 350
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Stick to top of page on scroll",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Website Header"
+    }
+  ]
+}
+{% endschema %}

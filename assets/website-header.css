@@ -1,0 +1,319 @@
+/* ===================================
+   WEBSITE HEADER - MOBILE FIRST CSS
+   Namespaced under .website-header. CTA visuals (color/border/shape)
+   come from the theme's existing .button / .button--secondary
+   classes and are intentionally NOT touched here.
+   =================================== */
+
+/* -------------------------
+   BASE STYLES (Mobile: 0-479px)
+   ------------------------- */
+
+.website-header {
+  --website-header-max-width: 1240px;
+  --website-header-side-padding: 20px;
+  --website-header-gap: 16px;
+  --website-header-padding-top: 16px;
+  --website-header-padding-bottom: 16px;
+  --website-header-duration: 350ms;
+  --website-header-logo-width: 120px;
+
+  width: 100%;
+  /* Background/text colors come from the theme's color scheme system
+     (the .color-scheme-N class Shopify generates from settings_schema),
+     not from this file - pick the scheme in the section's "Colors"
+     setting to change them. */
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+}
+
+.website-header * {
+  box-sizing: border-box;
+}
+
+.website-header__container {
+  width: 100%;
+  max-width: var(--website-header-max-width);
+  margin: 0 auto;
+  padding: var(--website-header-padding-top) var(--website-header-side-padding) var(--website-header-padding-bottom);
+}
+
+/* Bar: toggle + logo */
+
+.website-header__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--website-header-gap);
+}
+
+.website-header__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 0 0 auto;
+}
+
+.website-header__toggle:focus-visible {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: 2px;
+}
+
+.website-header__icon-wrap {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.website-header__icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  transition: opacity var(--website-header-duration) ease, transform var(--website-header-duration) ease;
+}
+
+.website-header__icon--menu {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.website-header__icon--close {
+  opacity: 0;
+  transform: rotate(-45deg) scale(0.5);
+}
+
+.website-header__toggle[aria-expanded='true'] .website-header__icon--menu {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.5);
+}
+
+.website-header__toggle[aria-expanded='true'] .website-header__icon--close {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Logo: centered between the toggle button and a matching invisible
+   spacer so it stays visually centered on mobile. */
+
+.website-header__logo {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.website-header__logo::after {
+  content: '';
+  width: 24px;
+  flex: 0 0 auto;
+}
+
+.website-header__logo-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.website-header__logo-image {
+  width: var(--website-header-logo-width);
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Collapsible content: animated with the grid-template-rows technique
+   so height, and the fade, both run smoothly without measuring the
+   DOM in JavaScript. */
+
+.website-header__content {
+  display: grid;
+  grid-template-rows: 0fr;
+  padding-top: 0;
+  opacity: 0;
+  /* padding-top is transitioned here (on the row-sizing element itself),
+     not on .website-header__content-inner below - padding on the
+     overflow:hidden inner element would keep contributing to its size
+     even at 0fr and stop the row from ever truly collapsing to 0. */
+  transition: grid-template-rows var(--website-header-duration) ease, opacity var(--website-header-duration) ease,
+    padding-top var(--website-header-duration) ease;
+}
+
+.website-header[data-state='open'] .website-header__content {
+  grid-template-rows: 1fr;
+  padding-top: var(--website-header-gap);
+  opacity: 1;
+}
+
+.website-header__content-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--website-header-gap);
+  text-align: center;
+}
+
+.website-header__tagline {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  margin: 0;
+  color: inherit;
+}
+
+.website-header__tagline p {
+  margin: 0;
+}
+
+/* CTA: layout/spacing only - color, border, radius and shadow are
+   inherited untouched from the theme's .button / .button--secondary. */
+
+.website-header__cta {
+  gap: 0.6rem;
+}
+
+.website-header__cta[aria-disabled='true'] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.website-header__cta-arrow {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: 0 0 auto;
+  transition: transform var(--website-header-duration) ease;
+}
+
+@media (hover: hover) {
+  .website-header__cta:hover .website-header__cta-arrow {
+    transform: translateX(3px);
+  }
+}
+
+/* Sticky */
+
+.website-header--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* -------------------------
+   LARGE MOBILE (480px - 767px)
+   ------------------------- */
+
+@media (min-width: 480px) {
+  .website-header__logo-text {
+    font-size: 1.8rem;
+  }
+
+  .website-header__tagline {
+    font-size: 1.5rem;
+  }
+}
+
+/* -------------------------
+   TABLET (768px - 1023px)
+   ------------------------- */
+
+@media (min-width: 768px) {
+  .website-header__content-inner {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .website-header__tagline {
+    font-size: 1.6rem;
+  }
+}
+
+/* -------------------------
+   DESKTOP (1024px+): single inline row
+   ------------------------- */
+
+@media (min-width: 1024px) {
+  .website-header__container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: var(--website-header-gap);
+  }
+
+  .website-header__toggle {
+    display: none;
+  }
+
+  .website-header__bar {
+    display: contents;
+  }
+
+  .website-header__logo {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    grid-column: 1;
+  }
+
+  .website-header__logo::after {
+    content: none;
+  }
+
+  /* Unwrap the collapsible panel so its children become direct grid
+     items sitting in the same row as the logo - no toggle needed.
+     Explicit grid-column values (rather than relying on source-order
+     auto-placement) keep the layout correct even when the tagline or
+     CTA is turned off in the editor. */
+  .website-header__content {
+    display: contents;
+    opacity: 1;
+  }
+
+  .website-header__content-inner {
+    display: contents;
+  }
+
+  .website-header__tagline {
+    grid-column: 2;
+    text-align: center;
+    padding-top: 0;
+  }
+
+  .website-header__cta {
+    grid-column: 3;
+    justify-self: end;
+  }
+}
+
+@media (min-width: 1280px) {
+  .website-header__container {
+    column-gap: calc(var(--website-header-gap) * 1.5);
+  }
+}
+
+/* -------------------------
+   ACCESSIBILITY
+   ------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .website-header__content,
+  .website-header__icon,
+  .website-header__cta-arrow {
+    transition: none;
+  }
+}

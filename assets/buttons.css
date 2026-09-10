@@ -1,0 +1,14 @@
+.button{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:20px;
+text-decoration:none;
+}
+.button__icon{
+transition:transform .3s ease;
+}
+.button:hover .button__icon,
+.button:focus-visible .button__icon{
+transform:translateX(4px);
+}
