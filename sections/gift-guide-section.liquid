@@ -168,14 +168,7 @@
         <p class="gift-guide-description">{{ section.settings.description }}</p>
       {% endif %}
 
-      {% if section.settings.button_text %}
-        <div class="gift-guide-button-wrapper">
-          <a href="{{ section.settings.button_url }}" class="gift-guide-button">
-            <span>{{ section.settings.button_text }}</span>
-            <span class="gift-guide-button-arrow">→</span>
-          </a>
-        </div>
-      {% endif %}
+        {% include 'button' %}
     </div>
 
     <!-- Image Section -->
