@@ -31,7 +31,7 @@
     .hero-banner[data-section-id="{{ section.id }}"] {
       --hero-banner-heading-color: {{ heading_color }};
       --hero-banner-text-color: {{ text_color }};
-      --hero-banner-mobile-ratio: {{ image_mobile.aspect_ratio | default: 0.8 }};
+      --hero-banner-mobile-ratio: {{ image_mobile.aspect_ratio | default: 1.42 }};
       --hero-banner-desktop-ratio: {{ image_desktop.aspect_ratio | default: 2.4 }};
       --hero-banner-content-bg: {{ section.settings.content_background_color }};
     }
