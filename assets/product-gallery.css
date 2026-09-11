@@ -22,6 +22,7 @@
   }
 }
 
+
 @media (min-width: 1024px) {
   .product-gallery {
     padding-top: var(--product-gallery-padding-top-desktop, 48px);
