@@ -1,14 +1,15 @@
 {%- liquid
   # Component: Product Gallery
-  # Description: Photo grid built from products picked DIRECTLY (no
-  #   collection needed - a product_list setting lets the merchant add
-  #   exactly the products they want, in order; however many they add is
-  #   however many show, up to 16). Each card's "+" hotspot cycles through
-  #   a small set of preset positions automatically (no per-product manual
-  #   placement, since the merchant is no longer configuring one block per
-  #   product individually). Clicking a hotspot opens a shared quick-add
-  #   popup showing that product's real name/price/description/variants,
-  #   with dynamic color + size selection and a working Add to Cart.
+  # Description: Photo grid built from ALL products in the store
+  #   automatically (collections.all - Shopify's built-in catalog-wide
+  #   collection), capped by a merchant-set count. No product picker at
+  #   all - the merchant only sets how many to show. Each card's "+"
+  #   hotspot cycles through a small set of preset positions
+  #   automatically (there's no per-product manual placement possible
+  #   once products aren't hand-picked one at a time). Clicking a hotspot
+  #   opens a shared quick-add popup showing that product's real name/
+  #   price/description/variants, with dynamic color + size selection and
+  #   a working Add to Cart.
   # Sections required by the brief: this is the "Grid" section (the "Banner"
   #   is a separate section). Built from scratch - no Dawn ready-made
   #   sections/snippets, only the shared .page-width layout utility and the
@@ -20,7 +21,7 @@
   assign heading = section.settings.heading
   assign heading_color = section.settings.heading_color
   assign description_limit = section.settings.description_limit
-  assign products = section.settings.products
+  assign products_to_show = section.settings.products_to_show
 -%}
 
 <section
@@ -47,13 +48,13 @@
       <h2 class="product-gallery__heading">{{ heading }}</h2>
     {%- endif -%}
 
-    {%- if products.size > 0 -%}
+    {%- if collections.all.products.size > 0 -%}
       <div class="product-gallery__grid">
-        {%- for product in products -%}
+        {%- for product in collections.all.products limit: products_to_show -%}
           {%- comment -%}
             Hotspot position cycles through 5 presets by card index, so
-            products pulled dynamically from a collection still get some
-            visual variety instead of every "+" sitting in the same spot.
+            products pulled automatically still get some visual variety
+            instead of every "+" sitting in the same spot.
           {%- endcomment -%}
           {%- assign hotspot_variant = forloop.index0 | modulo: 5 -%}
 
@@ -156,7 +157,9 @@
 
           <div class="product-gallery__popup-option" data-popup-color-wrap hidden>
             <span class="product-gallery__popup-label" data-popup-color-label>Color</span>
-            <div class="product-gallery__color-options" data-popup-color-options></div>
+            <div class="product-gallery__color-options" data-popup-color-options>
+              <span class="product-gallery__color-indicator" data-color-indicator aria-hidden="true"></span>
+            </div>
           </div>
 
           <div class="product-gallery__popup-option" data-popup-size-wrap hidden>
@@ -227,11 +230,14 @@
       "content": "Products"
     },
     {
-      "type": "product_list",
-      "id": "products",
-      "label": "Products",
-      "limit": 16,
-      "info": "Add up to 16 products directly - however many you add is however many show."
+      "type": "range",
+      "id": "products_to_show",
+      "min": 1,
+      "max": 16,
+      "step": 1,
+      "label": "Number of products to show",
+      "info": "Pulled automatically from your store's products - no picking needed.",
+      "default": 6
     },
     {
       "type": "range",

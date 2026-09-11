@@ -7,7 +7,6 @@
    initialised independently, so multiple instances never share state.
    =================================== */
 
-   
 (function () {
   'use strict';
 
@@ -47,6 +46,7 @@
       colorWrap: overlay.querySelector('[data-popup-color-wrap]'),
       colorLabel: overlay.querySelector('[data-popup-color-label]'),
       colorOptions: overlay.querySelector('[data-popup-color-options]'),
+      colorIndicator: overlay.querySelector('[data-color-indicator]'),
       sizeWrap: overlay.querySelector('[data-popup-size-wrap]'),
       sizeLabel: overlay.querySelector('[data-popup-size-label]'),
       dropdown: overlay.querySelector('[data-popup-size-dropdown]'),
@@ -99,9 +99,12 @@
       overlay.hidden = false;
       // Force layout before adding the class so the transition actually runs
       // (removing [hidden] and adding a class in the same tick can collapse
-      // to no-transition in some browsers otherwise).
+      // to no-transition in some browsers otherwise). Also where the color
+      // indicator gets positioned instantly - it needs real layout
+      // (offsetWidth/offsetLeft), which isn't available while [hidden].
       requestAnimationFrame(function () {
         overlay.classList.add('is-open');
+        updateColorIndicator(true);
       });
 
       document.addEventListener('keydown', handleKeydown);
@@ -202,7 +205,11 @@
     }
 
     function renderColorOptions(product, colorIndex) {
+      // The indicator is a permanent fixture of this row - detach it before
+      // clearing so re-rendering for a different product doesn't destroy it.
+      var indicator = elements.colorIndicator;
       elements.colorOptions.innerHTML = '';
+      elements.colorOptions.appendChild(indicator);
 
       if (colorIndex === -1) {
         elements.colorWrap.hidden = true;
@@ -222,11 +229,11 @@
         button.setAttribute('aria-pressed', 'false');
         button.setAttribute('data-value', value);
 
-        // Selected fill uses the option's own value as a real CSS color
-        // when the browser recognises it (e.g. "Blue", "Black", "#1e3a8a").
-        // Falls back to the plain neutral style when it isn't a valid color.
+        // Left accent bar hints at the option's own actual color, when the
+        // browser recognises the value as a real CSS color (e.g. "Blue",
+        // "#1e3a8a"). Left blank (no bar) when it isn't - e.g. "Ocean Mist".
         if (window.CSS && window.CSS.supports && window.CSS.supports('color', value)) {
-          button.dataset.swatchColor = value;
+          button.style.setProperty('--swatch-color', value);
         }
 
         button.addEventListener('click', function () {
@@ -409,7 +416,7 @@
       applyAvailability(elements.dropdownList.querySelectorAll('button'), state.sizeIndex);
 
       var match = findMatchingVariant();
-      renderColorSwatchStyles();
+      updateColorIndicator();
 
       if (match) {
         elements.price.textContent = match.price;
@@ -445,52 +452,37 @@
       });
     }
 
-    // Applies the real-color background + auto-contrast text color to
-    // color option buttons, computed via a throwaway element rather than
-    // a hardcoded name-to-hex table (works for any CSS-valid color name).
-    function renderColorSwatchStyles() {
-      if (!renderColorSwatchStyles.probe) {
-        renderColorSwatchStyles.probe = document.createElement('div');
+    // Positions/sizes the single sliding indicator to match whichever
+    // color option is currently selected - the black bar that slides
+    // left/right between options, per the Featured Opportunities tabs
+    // reference. offsetLeft/offsetWidth are relative to .color-options
+    // itself (position: relative), so no manual coordinate math needed.
+    // instant=true skips the transition (used on first render, so the
+    // whole row doesn't visibly slide in from nothing when the popup opens).
+    function updateColorIndicator(instant) {
+      var selectedColor = state.selectedOptions[state.colorIndex];
+      var selectedButton = elements.colorOptions.querySelector(
+        '.product-gallery__color-option[aria-pressed="true"]'
+      );
+
+      if (!selectedButton || !selectedColor) {
+        elements.colorIndicator.style.width = '0';
+        return;
       }
-      var probe = renderColorSwatchStyles.probe;
-      probe.style.display = 'none';
-      document.body.appendChild(probe);
 
-      elements.colorOptions.querySelectorAll('button').forEach(function (button) {
-        var isSelected = button.getAttribute('aria-pressed') === 'true';
-        var colorValue = button.dataset.swatchColor;
-
-        if (isSelected && colorValue) {
-          probe.style.color = '';
-          probe.style.color = colorValue;
-          var computed = getComputedStyle(probe).color;
-          button.style.backgroundColor = colorValue;
-          button.style.borderColor = colorValue;
-          button.style.color = getContrastTextColor(computed);
-        } else {
-          button.style.backgroundColor = '';
-          button.style.borderColor = '';
-          button.style.color = '';
-        }
-      });
-
-      document.body.removeChild(probe);
-    }
-
-    function getContrastTextColor(rgbString) {
-      var match = rgbString.match(/\d+(\.\d+)?/g);
-      if (!match || match.length < 3) return '#111111';
-
-      var r = Number(match[0]) / 255;
-      var g = Number(match[1]) / 255;
-      var b = Number(match[2]) / 255;
-
-      var toLinear = function (c) {
-        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      var apply = function () {
+        elements.colorIndicator.style.width = selectedButton.offsetWidth + 'px';
+        elements.colorIndicator.style.transform = 'translateX(' + selectedButton.offsetLeft + 'px)';
       };
 
-      var luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
-      return luminance > 0.5 ? '#111111' : '#ffffff';
+      if (instant || prefersReducedMotion) {
+        elements.colorIndicator.style.transition = 'none';
+        apply();
+        void elements.colorIndicator.offsetWidth; // force reflow
+        elements.colorIndicator.style.transition = '';
+      } else {
+        apply();
+      }
     }
 
     /* ----------------------------------------
@@ -637,6 +629,12 @@
     });
 
     elements.addToCartButton.addEventListener('click', handleAddToCart);
+
+    window.addEventListener('resize', function () {
+      if (!overlay.hidden) {
+        updateColorIndicator(true);
+      }
+    });
 
     // Cleanup on Shopify section unload (theme editor)
     document.addEventListener('shopify:section:unload', function (event) {
