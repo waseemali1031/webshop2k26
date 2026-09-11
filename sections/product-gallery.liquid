@@ -1,16 +1,14 @@
 {%- liquid
   # Component: Product Gallery
-  # Description: Photo grid pulled from a merchant-chosen collection (up to
-  #   a merchant-chosen count - if the collection has fewer products than
-  #   that count, only the products that actually exist are shown). Each
-  #   card's "+" hotspot cycles through a small set of preset positions
-  #   automatically (no per-product manual placement, since products are
-  #   now pulled dynamically rather than hand-picked one at a time).
-  #   Clicking a hotspot opens a shared quick-add popup showing that
-  #   product's real name/price/description/variants, with dynamic color +
-  #   size selection and a working Add to Cart (with a bundle rule:
-  #   selecting Black + Medium on ANY product also adds a configured bonus
-  #   product to the cart in the same request).
+  # Description: Photo grid built from products picked DIRECTLY (no
+  #   collection needed - a product_list setting lets the merchant add
+  #   exactly the products they want, in order; however many they add is
+  #   however many show, up to 16). Each card's "+" hotspot cycles through
+  #   a small set of preset positions automatically (no per-product manual
+  #   placement, since the merchant is no longer configuring one block per
+  #   product individually). Clicking a hotspot opens a shared quick-add
+  #   popup showing that product's real name/price/description/variants,
+  #   with dynamic color + size selection and a working Add to Cart.
   # Sections required by the brief: this is the "Grid" section (the "Banner"
   #   is a separate section). Built from scratch - no Dawn ready-made
   #   sections/snippets, only the shared .page-width layout utility and the
@@ -22,9 +20,7 @@
   assign heading = section.settings.heading
   assign heading_color = section.settings.heading_color
   assign description_limit = section.settings.description_limit
-  assign bundle_product = section.settings.bundle_product
-  assign collection = section.settings.collection
-  assign products_to_show = section.settings.products_to_show
+  assign products = section.settings.products
 -%}
 
 <section
@@ -32,15 +28,16 @@
   data-section-id="{{ section.id }}"
   data-component="product-gallery"
   data-description-limit="{{ description_limit }}"
-  {%- if bundle_product -%}
-    data-bundle-variant-id="{{ bundle_product.selected_or_first_available_variant.id }}"
-  {%- endif -%}
 >
   <style>
     .product-gallery[data-section-id="{{ section.id }}"] {
       --product-gallery-heading-color: {{ heading_color }};
-      --product-gallery-padding-top-desktop: {{ section.settings.padding_top }}px;
-      --product-gallery-padding-bottom-desktop: {{ section.settings.padding_bottom }}px;
+      --product-gallery-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+      --product-gallery-padding-top-tablet: {{ section.settings.padding_top_tablet }}px;
+      --product-gallery-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
+      --product-gallery-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+      --product-gallery-padding-bottom-tablet: {{ section.settings.padding_bottom_tablet }}px;
+      --product-gallery-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
     }
   </style>
 
@@ -50,9 +47,9 @@
       <h2 class="product-gallery__heading">{{ heading }}</h2>
     {%- endif -%}
 
-    {%- if collection != blank and collection.products.size > 0 -%}
+    {%- if products.size > 0 -%}
       <div class="product-gallery__grid">
-        {%- for product in collection.products limit: products_to_show -%}
+        {%- for product in products -%}
           {%- comment -%}
             Hotspot position cycles through 5 presets by card index, so
             products pulled dynamically from a collection still get some
@@ -173,9 +170,11 @@
                 aria-expanded="false"
               >
                 <span data-dropdown-value>Choose your size</span>
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="14" height="14">
-                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+                <span class="product-gallery__dropdown-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="14" height="14">
+                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </button>
               <ul class="product-gallery__dropdown-list" data-dropdown-list role="listbox" hidden></ul>
             </div>
@@ -228,19 +227,11 @@
       "content": "Products"
     },
     {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "min": 1,
-      "max": 16,
-      "step": 1,
-      "label": "Number of products to show",
-      "info": "Shows fewer if the collection has fewer products than this.",
-      "default": 6
+      "type": "product_list",
+      "id": "products",
+      "label": "Products",
+      "limit": 16,
+      "info": "Add up to 16 products directly - however many you add is however many show."
     },
     {
       "type": "range",
@@ -254,38 +245,66 @@
     },
     {
       "type": "header",
-      "content": "Bundle rule"
-    },
-    {
-      "type": "product",
-      "id": "bundle_product",
-      "label": "Bonus product",
-      "info": "Automatically added to cart when a shopper selects a Black + Medium variant on any product below."
-    },
-    {
-      "type": "header",
       "content": "Layout"
     },
     {
       "type": "range",
-      "id": "padding_top",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding (mobile)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top_tablet",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding (tablet)",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
       "min": 0,
       "max": 120,
       "step": 4,
       "unit": "px",
       "label": "Top padding (desktop)",
-      "info": "Scales down proportionally on tablet and mobile.",
       "default": 48
     },
     {
       "type": "range",
-      "id": "padding_bottom",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding (mobile)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_tablet",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding (tablet)",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
       "min": 0,
       "max": 120,
       "step": 4,
       "unit": "px",
       "label": "Bottom padding (desktop)",
-      "info": "Scales down proportionally on tablet and mobile.",
       "default": 48
     }
   ],

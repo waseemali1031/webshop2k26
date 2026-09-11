@@ -3,9 +3,8 @@
    Vanilla JS only - no jQuery.
    Handles: hotspot -> shared popup, dynamic color/size rendering
    from real variant data, live variant resolution, custom dropdown,
-   and Add to Cart (with the Black + Medium -> bonus product bundle
-   rule). Each .product-gallery section on the page is initialised
-   independently, so multiple instances never share state.
+   and Add to Cart. Each .product-gallery section on the page is
+   initialised independently, so multiple instances never share state.
    =================================== */
 
 (function () {
@@ -70,7 +69,6 @@
     };
 
     var descriptionLimit = parseInt(section.getAttribute('data-description-limit'), 10) || 120;
-    var bundleVariantId = section.getAttribute('data-bundle-variant-id');
 
     /* ----------------------------------------
        OPEN / CLOSE
@@ -231,7 +229,7 @@
         }
 
         button.addEventListener('click', function () {
-          selectOption(colorIndex, value, button, elements.colorOptions);
+          selectOption(colorIndex, value);
         });
 
         elements.colorOptions.appendChild(button);
@@ -265,8 +263,7 @@
         option.setAttribute('data-value', value);
 
         option.addEventListener('click', function () {
-          selectOption(sizeIndex, value, option, elements.dropdownList, 'aria-selected');
-          elements.dropdownValue.textContent = value;
+          selectOption(sizeIndex, value);
           closeDropdown();
         });
 
@@ -287,22 +284,98 @@
       firstAvailable.options.forEach(function (value, index) {
         state.selectedOptions[index] = value;
       });
+
+      // Reflect the preselected defaults onto the actual buttons/dropdown -
+      // without this, state knows the selection but the DOM (and therefore
+      // the color fill / dropdown value the shopper actually sees) doesn't,
+      // until they manually click something.
+      syncSelectionUI();
+    }
+
+    // Single source of truth for reflecting state.selectedOptions onto the
+    // DOM (button aria-pressed/aria-selected + dropdown display value).
+    // Called on preselect AND on every click, so the two can never drift
+    // out of sync with each other again.
+    function syncSelectionUI() {
+      var selectedColor = state.selectedOptions[state.colorIndex];
+      elements.colorOptions.querySelectorAll('button').forEach(function (btn) {
+        var isSelected = btn.getAttribute('data-value') === selectedColor;
+        btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+      });
+
+      var selectedSize = state.selectedOptions[state.sizeIndex];
+      elements.dropdownList.querySelectorAll('button').forEach(function (btn) {
+        var isSelected = btn.getAttribute('data-value') === selectedSize;
+        btn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      });
+      if (selectedSize) {
+        elements.dropdownValue.textContent = selectedSize;
+      }
     }
 
     /* ----------------------------------------
        SELECTION + VARIANT RESOLUTION
        ---------------------------------------- */
 
-    function selectOption(index, value, buttonEl, groupEl, activeAttr) {
+    function selectOption(index, value) {
+      var previousValue = state.selectedOptions[index];
+      var container = index === state.colorIndex
+        ? elements.colorOptions
+        : (index === state.sizeIndex ? elements.dropdownList : null);
+      var direction = (container && previousValue !== undefined && previousValue !== value)
+        ? getSlideDirection(container, previousValue, value)
+        : null;
+
       state.selectedOptions[index] = value;
-
-      var siblings = groupEl.querySelectorAll('button');
-      siblings.forEach(function (sib) {
-        var attr = activeAttr || 'aria-pressed';
-        sib.setAttribute(attr, sib === buttonEl ? 'true' : 'false');
-      });
-
+      syncSelectionUI();
       refreshVariantUI();
+
+      if (direction && !prefersReducedMotion) {
+        animatePriceChange(direction);
+      }
+    }
+
+    // Direction follows the clicked option's position relative to the one
+    // it replaces: picking an option to the LEFT of the current selection
+    // slides the price left; picking one to the RIGHT slides it right.
+    // Matches the horizontal tab-switch motion in the Featured Opportunities
+    // reference (carpentertechnology.com careers page, tabs module).
+    function getSlideDirection(container, oldValue, newValue) {
+      var items = Array.prototype.slice.call(container.querySelectorAll('[data-value]'));
+      var oldIndex = -1;
+      var newIndex = -1;
+      items.forEach(function (item, i) {
+        var v = item.getAttribute('data-value');
+        if (v === oldValue) oldIndex = i;
+        if (v === newValue) newIndex = i;
+      });
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return null;
+      return newIndex < oldIndex ? 'left' : 'right';
+    }
+
+    // Snaps the price to an off-position (matching the chosen direction)
+    // with zero transition, forces a reflow, then lets the CSS transition
+    // (defined in product-gallery.css) carry it back to rest - a clean
+    // slide-in for whatever the new value already is, with no dual-element
+    // crossfade needed.
+    function animatePriceChange(direction) {
+      var el = elements.price;
+      var offset = direction === 'left' ? '16px' : '-16px';
+
+      el.style.transition = 'none';
+      el.style.transform = 'translateX(' + offset + ')';
+      el.style.opacity = '0';
+
+      // Force reflow so the "off" position is actually painted before we
+      // transition back to rest - otherwise the browser can coalesce both
+      // style changes into one frame and skip the animation entirely.
+      void el.offsetWidth;
+
+      el.style.transition = '';
+      requestAnimationFrame(function () {
+        el.style.transform = 'translateX(0)';
+        el.style.opacity = '1';
+      });
     }
 
     function findMatchingVariant() {
@@ -491,18 +564,6 @@
 
       var items = [{ id: variant.id, quantity: 1 }];
 
-      // Bundle rule: selecting Black + Medium (on ANY product) also adds
-      // the merchant-configured bonus product, in the same request.
-      var values = variant.options.map(function (value) {
-        return String(value).trim().toLowerCase();
-      });
-      var hasBlack = values.indexOf('black') !== -1;
-      var hasMedium = values.indexOf('medium') !== -1;
-
-      if (hasBlack && hasMedium && bundleVariantId) {
-        items.push({ id: Number(bundleVariantId), quantity: 1 });
-      }
-
       state.isSubmitting = true;
       elements.addToCartButton.disabled = true;
       setAddToCartLabel('Adding\u2026');
@@ -523,12 +584,7 @@
         })
         .then(function () {
           setAddToCartLabel('Added!');
-          setStatus(
-            hasBlack && hasMedium && bundleVariantId
-              ? 'Added to cart, along with your free bonus item.'
-              : 'Added to cart.',
-            'success'
-          );
+          setStatus('Added to cart.', 'success');
           document.dispatchEvent(new CustomEvent('product-gallery:added-to-cart', {
             detail: { items: items }
           }));

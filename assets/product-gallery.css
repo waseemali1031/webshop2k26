@@ -11,22 +11,19 @@
    =================================== */
 
 .product-gallery {
-  /* Mobile: roughly half the configured desktop value */
-  padding-top: calc(var(--product-gallery-padding-top-desktop, 48px) * 0.5);
-  padding-bottom: calc(var(--product-gallery-padding-bottom-desktop, 48px) * 0.5);
+  padding-top: var(--product-gallery-padding-top-mobile, 24px);
+  padding-bottom: var(--product-gallery-padding-bottom-mobile, 24px);
 }
 
-@media (min-width: 480px) {
+@media (min-width: 768px) {
   .product-gallery {
-    /* Large mobile / small tablet: roughly three-quarters */
-    padding-top: calc(var(--product-gallery-padding-top-desktop, 48px) * 0.75);
-    padding-bottom: calc(var(--product-gallery-padding-bottom-desktop, 48px) * 0.75);
+    padding-top: var(--product-gallery-padding-top-tablet, 36px);
+    padding-bottom: var(--product-gallery-padding-bottom-tablet, 36px);
   }
 }
 
 @media (min-width: 1024px) {
   .product-gallery {
-    /* Desktop: the exact configured value */
     padding-top: var(--product-gallery-padding-top-desktop, 48px);
     padding-bottom: var(--product-gallery-padding-bottom-desktop, 48px);
   }
@@ -226,6 +223,10 @@
   margin: 0;
   font-size: 16px;
   color: #000000;
+  /* Transform/opacity are driven by JS (product-gallery.js,
+     animatePriceChange) to slide the new value in from the direction
+     matching whichever option was clicked - see selectOption(). */
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .product-gallery__popup-description {
@@ -264,11 +265,16 @@
   color: #111111;
   border: 1px solid #cccccc;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 .product-gallery__color-option:hover {
   border-color: #000000;
+}
+
+.product-gallery__color-option:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
 .product-gallery__color-option[aria-pressed="true"] {
@@ -293,10 +299,9 @@
 
 .product-gallery__dropdown-toggle {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: stretch;
   width: 100%;
-  padding: 10px 14px;
+  padding: 0;
   font-size: 14px;
   background-color: #ffffff;
   color: #111111;
@@ -304,11 +309,40 @@
   cursor: pointer;
 }
 
-.product-gallery__dropdown-toggle svg {
+.product-gallery__dropdown-toggle > span[data-dropdown-value] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The chevron sits in its own boxed segment, separated by a border,
+   rather than floating loose next to the text. */
+.product-gallery__dropdown-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  border-left: 1px solid #cccccc;
+  background-color: #f7f7f7;
+  transition: background-color 0.2s ease;
+}
+
+.product-gallery__dropdown-toggle:hover .product-gallery__dropdown-icon-box {
+  background-color: #eeeeee;
+}
+
+.product-gallery__dropdown-icon-box svg {
   transition: transform 0.2s ease;
 }
 
-.product-gallery__dropdown-toggle[aria-expanded="true"] svg {
+.product-gallery__dropdown-toggle[aria-expanded="true"] .product-gallery__dropdown-icon-box svg {
   transform: rotate(180deg);
 }
 
@@ -359,6 +393,11 @@
   color: #ffffff;
 }
 
+.product-gallery__dropdown-option:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+}
+
 .product-gallery__dropdown-option:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -401,10 +440,13 @@
   .product-gallery__hotspot,
   .product-gallery__overlay,
   .product-gallery__popup,
-  .product-gallery__dropdown-toggle svg,
+  .product-gallery__popup-price,
+  .product-gallery__dropdown-icon-box,
+  .product-gallery__dropdown-icon-box svg,
   .product-gallery__dropdown-list,
   .product-gallery__color-option,
   .product-gallery__dropdown-option {
     transition: none;
+    animation: none;
   }
 }
