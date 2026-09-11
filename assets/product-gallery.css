@@ -86,6 +86,12 @@
 
 .product-gallery__hotspot {
   position: absolute;
+  /* Editable per product block in the Theme Editor (--hotspot-x/-y set
+     on .product-gallery__media). Percentage-based and relative to the
+     image container, so position holds correctly as the image resizes
+     across breakpoints - clamped so it can never sit outside the card. */
+  left: clamp(8%, var(--hotspot-x, 65%), 92%);
+  top: clamp(8%, var(--hotspot-y, 30%), 92%);
   transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
@@ -111,20 +117,6 @@
   outline: 2px solid #000000;
   outline-offset: 2px;
 }
-
-/* Auto-cycled presets (see forloop.index0 | modulo: 5 in the Liquid).
-   Clustered toward the upper-right, echoing where the hotspot tends to
-   land in the reference photos (near a collar/lapel/strap), while still
-   varying enough that six cards in a row don't look identical. Kept well
-   within the card edges so the button is always fully visible. Exact
-   per-photo placement isn't possible once products are pulled
-   automatically rather than hand-picked - this is the closest a fixed
-   set of presets can get. */
-.product-gallery__hotspot--pos-0 { left: 70%; top: 25%; }
-.product-gallery__hotspot--pos-1 { left: 60%; top: 35%; }
-.product-gallery__hotspot--pos-2 { left: 75%; top: 45%; }
-.product-gallery__hotspot--pos-3 { left: 65%; top: 20%; }
-.product-gallery__hotspot--pos-4 { left: 80%; top: 30%; }
 
 /* -------------------------
    OVERLAY + POPUP
