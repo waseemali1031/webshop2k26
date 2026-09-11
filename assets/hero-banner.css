@@ -128,5 +128,6 @@
     left: auto;
     bottom: auto;
     margin-top: clamp(16px, 3vw, 24px);
+    transform: unset;
   }
 }
