@@ -33,28 +33,31 @@
       --hero-banner-text-color: {{ text_color }};
       --hero-banner-mobile-ratio: {{ image_mobile.aspect_ratio | default: 0.8 }};
       --hero-banner-desktop-ratio: {{ image_desktop.aspect_ratio | default: 2.4 }};
+      --hero-banner-content-bg: {{ section.settings.content_background_color }};
     }
   </style>
 
   <div class="hero-banner__inner">
 
-    <div class="hero-banner__content">
-      {%- if heading != blank -%}
-        <h2 class="hero-banner__heading">{{ heading }}</h2>
-      {%- endif -%}
+    <div class="hero-banner__container page-width">
+      <div class="hero-banner__content">
+        {%- if heading != blank -%}
+          <h2 class="hero-banner__heading">{{ heading }}</h2>
+        {%- endif -%}
 
-      {%- if description != blank -%}
-        <div class="hero-banner__description">{{ description }}</div>
-      {%- endif -%}
+        {%- if description != blank -%}
+          <div class="hero-banner__description">{{ description }}</div>
+        {%- endif -%}
 
-      <div class="hero-banner__cta">
-        {% render 'cta-button',
-          show_button: show_button,
-          button_label: button_label,
-          button_link: button_link,
-          button_style: button_style,
-          button_classes_extra: 'hero-banner__cta-button'
-        %}
+        <div class="hero-banner__cta">
+          {% render 'cta-button',
+            show_button: show_button,
+            button_label: button_label,
+            button_link: button_link,
+            button_style: button_style,
+            button_classes_extra: 'hero-banner__cta-button'
+          %}
+        </div>
       </div>
     </div>
 
@@ -136,6 +139,13 @@
       "id": "text_color",
       "label": "Description color",
       "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "content_background_color",
+      "label": "Content background color",
+      "info": "Background for the heading/description/button panel. Use the opacity slider for a translucent panel over the image.",
+      "default": "#ffffff"
     },
     {
       "type": "header",

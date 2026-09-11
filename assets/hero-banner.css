@@ -17,7 +17,6 @@
    MEDIA
    ------------------------- */
 
-   
 .hero-banner__media {
   position: relative;
   width: 100%;
@@ -33,13 +32,25 @@
 }
 
 /* -------------------------
+   CONTAINER
+   Aligns content to the theme's standard page-width grid.
+   The image stays full-bleed; only content is constrained.
+   ------------------------- */
+
+.hero-banner__container {
+  position: relative;
+}
+
+/* -------------------------
    CONTENT (heading, description, CTA)
    Mobile: normal flow, centered, sits above the image.
+   Single background color for the whole panel - not per-element.
    ------------------------- */
 
 .hero-banner__content {
   padding: clamp(24px, 6vw, 48px) clamp(20px, 6vw, 40px);
   text-align: center;
+  background-color: var(--hero-banner-content-bg, transparent);
 }
 
 .hero-banner__heading {
@@ -92,11 +103,19 @@
     z-index: 0;
   }
 
+  /* page-width's own max-width + auto margins center this within
+     the full-bleed inner, so content aligns to the site's grid
+     instead of the raw viewport edge */
+  .hero-banner__container {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
   .hero-banner__content {
     position: absolute;
     left: 0;
     bottom: 0;
-    z-index: 1;
     max-width: clamp(360px, 40vw, 560px);
     padding: clamp(32px, 5vw, 64px);
     text-align: left;
