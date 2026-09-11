@@ -86,6 +86,20 @@ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
 }
 
 /* -------------------------
+  FULL WIDTH
+  Modifier only - combine with --primary or --secondary.
+  Label and icon push to opposite edges instead of staying
+  grouped/centered, matching a full-bleed layout (e.g. inside
+  the Product Gallery popup's Add to Cart button).
+  ------------------------- */
+
+.cta-button--full {
+display: flex;
+width: 100%;
+justify-content: space-between;
+}
+
+/* -------------------------
   DISABLED (both variants)
   ------------------------- */
 
@@ -108,4 +122,3 @@ box-shadow: none;
   transition: none;
 }
 }
-

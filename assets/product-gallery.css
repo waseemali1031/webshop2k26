@@ -1,0 +1,382 @@
+/* ===================================
+   PRODUCT GALLERY
+   Grid: 2 cols mobile, 3 cols >=768px (CSS Grid).
+   Card internals, popup, and controls use flexbox.
+   Container built from scratch except the shared .page-width
+   layout utility (no other Dawn components/sections used).
+   =================================== */
+
+.product-gallery {
+  padding-top: var(--product-gallery-padding-top, 48px);
+  padding-bottom: var(--product-gallery-padding-bottom, 48px);
+}
+
+.product-gallery__heading {
+  margin: 0 0 20px;
+  font-size: clamp(22px, 4vw, 32px);
+  line-height: 1.2;
+  color: var(--product-gallery-heading-color, #000000);
+}
+
+/* -------------------------
+   GRID
+   ------------------------- */
+
+.product-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .product-gallery__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+.product-gallery__card {
+  position: relative;
+}
+
+.product-gallery__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.product-gallery__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+@media (hover: hover) {
+  .product-gallery__card:hover .product-gallery__image {
+    transform: scale(1.05);
+  }
+}
+
+/* -------------------------
+   HOTSPOT
+   Position is merchant-controlled per block (0-100%), clamped
+   here so the button can never sit outside the card edges.
+   ------------------------- */
+
+.product-gallery__hotspot {
+  position: absolute;
+  left: clamp(8%, var(--hotspot-x, 50%), 92%);
+  top: clamp(8%, var(--hotspot-y, 85%), 92%);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: #000000;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.product-gallery__hotspot:hover,
+.product-gallery__hotspot:focus-visible {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.product-gallery__hotspot:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* -------------------------
+   OVERLAY + POPUP
+   Opens/closes via JS toggling [hidden] + .is-open (see JS for
+   the transitionend handoff that removes [hidden] after fade-out).
+   ------------------------- */
+
+.product-gallery__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0);
+  transition: background-color 0.25s ease;
+}
+
+.product-gallery__overlay[hidden] {
+  display: none;
+}
+
+.product-gallery__overlay.is-open {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.product-gallery__popup {
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: #ffffff;
+  padding: 24px;
+  position: relative;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.product-gallery__overlay.is-open .product-gallery__popup {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.product-gallery__popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: #000000;
+  cursor: pointer;
+}
+
+.product-gallery__popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-gallery__popup-image {
+  flex-shrink: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+@media (min-width: 480px) {
+  .product-gallery__popup-body {
+    flex-direction: row;
+  }
+
+  .product-gallery__popup-image {
+    width: 120px;
+    height: 120px;
+    aspect-ratio: auto;
+  }
+}
+
+.product-gallery__popup-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-gallery__popup-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.product-gallery__popup-price {
+  margin: 0;
+  font-size: 16px;
+  color: #000000;
+}
+
+.product-gallery__popup-description {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666666;
+  /* character-limit truncation happens in JS at render time, so this
+     is a safety net only, not the primary overflow control */
+  overflow-wrap: break-word;
+}
+
+.product-gallery__popup-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #666666;
+}
+
+/* -------------------------
+   COLOR OPTIONS
+   Selected fills with the option's actual color value (set inline
+   by JS); unselected stays neutral regardless of the color name.
+   ------------------------- */
+
+.product-gallery__color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.product-gallery__color-option {
+  padding: 8px 16px;
+  font-size: 13px;
+  background-color: #ffffff;
+  color: #111111;
+  border: 1px solid #cccccc;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.product-gallery__color-option:hover {
+  border-color: #000000;
+}
+
+.product-gallery__color-option[aria-pressed="true"] {
+  border-color: transparent;
+}
+
+.product-gallery__color-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* -------------------------
+   SIZE DROPDOWN
+   Custom listbox: black/white invert on hover/selected, matching
+   the color options and the rest of the component set.
+   ------------------------- */
+
+.product-gallery__dropdown {
+  position: relative;
+}
+
+.product-gallery__dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #111111;
+  border: 1px solid #cccccc;
+  cursor: pointer;
+}
+
+.product-gallery__dropdown-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+.product-gallery__dropdown-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.product-gallery__dropdown-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.product-gallery__dropdown-list[hidden] {
+  display: none;
+}
+
+.product-gallery__dropdown-list.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-gallery__dropdown-option {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  text-align: left;
+  background-color: #ffffff;
+  color: #111111;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.product-gallery__dropdown-option:hover,
+.product-gallery__dropdown-option[aria-selected="true"] {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.product-gallery__dropdown-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.product-gallery__dropdown-option:disabled:hover {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+/* -------------------------
+   STATUS + ADD TO CART
+   Add to Cart reuses cta-button/cta-button--primary/cta-button--full
+   from cta-button.css for the exact same look/animation - its click
+   handling lives entirely in product-gallery.js, independent of the
+   cta-button snippet.
+   ------------------------- */
+
+.product-gallery__popup-status {
+  margin: 0;
+  min-height: 18px;
+  font-size: 13px;
+}
+
+.product-gallery__popup-status[data-state="error"] {
+  color: #c0392b;
+}
+
+.product-gallery__popup-status[data-state="success"] {
+  color: #1a7f37;
+}
+
+/* -------------------------
+   ACCESSIBILITY: reduced motion
+   ------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .product-gallery__image,
+  .product-gallery__hotspot,
+  .product-gallery__overlay,
+  .product-gallery__popup,
+  .product-gallery__dropdown-toggle svg,
+  .product-gallery__dropdown-list,
+  .product-gallery__color-option,
+  .product-gallery__dropdown-option {
+    transition: none;
+  }
+}

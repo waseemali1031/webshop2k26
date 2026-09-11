@@ -1,0 +1,311 @@
+{%- liquid
+  # Component: Product Gallery
+  # Description: Photo grid where each image has a "+" hotspot at a merchant-
+  #   chosen position. Clicking it opens a shared quick-add popup showing the
+  #   linked product's real name/price/description/variants, with dynamic
+  #   color + size selection and a working Add to Cart (with a bundle rule:
+  #   selecting Black + Medium on ANY product also adds a configured bonus
+  #   product to the cart in the same request).
+  # Sections required by the brief: this is the "Grid" section (the "Banner"
+  #   is a separate section). Built from scratch - no Dawn ready-made
+  #   sections/snippets, only the shared .page-width layout utility and the
+  #   existing cta-button.css classes (for visual consistency only; the
+  #   button's behaviour here is wired up independently in this section's
+  #   own JS, not via the cta-button snippet).
+  # No jQuery - vanilla JS only (see product-gallery.js).
+
+  assign heading = section.settings.heading
+  assign heading_color = section.settings.heading_color
+  assign description_limit = section.settings.description_limit
+  assign bundle_product = section.settings.bundle_product
+-%}
+
+<section
+  class="product-gallery"
+  data-section-id="{{ section.id }}"
+  data-component="product-gallery"
+  data-description-limit="{{ description_limit }}"
+  {%- if bundle_product -%}
+    data-bundle-variant-id="{{ bundle_product.selected_or_first_available_variant.id }}"
+  {%- endif -%}
+>
+  <style>
+    .product-gallery[data-section-id="{{ section.id }}"] {
+      --product-gallery-heading-color: {{ heading_color }};
+      --product-gallery-padding-top: {{ section.settings.padding_top }}px;
+      --product-gallery-padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  </style>
+
+  <div class="product-gallery__container page-width">
+
+    {%- if heading != blank -%}
+      <h2 class="product-gallery__heading">{{ heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="product-gallery__grid">
+        {%- for block in section.blocks -%}
+          {%- assign product = block.settings.product -%}
+          {%- if product != blank -%}
+            <div class="product-gallery__card" {{ block.shopify_attributes }}>
+              <div
+                class="product-gallery__media"
+                style="--hotspot-x: {{ block.settings.hotspot_x }}%; --hotspot-y: {{ block.settings.hotspot_y }}%;"
+              >
+                <img
+                  class="product-gallery__image"
+                  src="{{ product.featured_image | image_url: width: 800 }}"
+                  srcset="
+                    {{- product.featured_image | image_url: width: 400 }} 400w,
+                    {{ product.featured_image | image_url: width: 800 }} 800w,
+                    {{ product.featured_image | image_url: width: 1200 }} 1200w"
+                  sizes="(min-width: 768px) 33vw, 50vw"
+                  alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                  width="{{ product.featured_image.width }}"
+                  height="{{ product.featured_image.height }}"
+                  loading="lazy"
+                >
+
+                <button
+                  type="button"
+                  class="product-gallery__hotspot"
+                  data-action="open-quick-add"
+                  aria-label="{{ 'product_gallery.quick_add' | t: default: 'Quick add' }} {{ product.title | escape }}"
+                  aria-haspopup="dialog"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+                    <path d="M12 5V19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M5 12H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </button>
+
+                {%- comment -%}
+                  Product data for this card, read by product-gallery.js when
+                  its hotspot is clicked. Description is stripped of HTML here
+                  (truncation to data-description-limit happens in JS, at the
+                  last full word, so it never breaks the popup layout).
+                {%- endcomment -%}
+                <script type="application/json" data-product-json>
+                  {
+                    "id": {{ product.id | json }},
+                    "title": {{ product.title | json }},
+                    "url": {{ product.url | json }},
+                    "image": {{ product.featured_image | image_url: width: 200 | json }},
+                    "description": {{ product.description | strip_html | json }},
+                    "optionNames": {{ product.options | json }},
+                    "variants": [
+                      {%- for variant in product.variants -%}
+                        {
+                          "id": {{ variant.id | json }},
+                          "available": {{ variant.available | json }},
+                          "price": {{ variant.price | money | json }},
+                          "options": {{ variant.options | json }}
+                        }{%- unless forloop.last -%},{%- endunless -%}
+                      {%- endfor -%}
+                    ]
+                  }
+                </script>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  {%- comment -%}
+    Single shared popup, reused for whichever product's hotspot was clicked.
+    Content below is placeholder structure only - product-gallery.js clears
+    and repopulates the dynamic parts (image/title/price/description/color/
+    size/button state) each time it opens.
+  {%- endcomment -%}
+  <div class="product-gallery__overlay" data-quick-add-overlay hidden>
+    <div
+      class="product-gallery__popup"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ProductGalleryPopupTitle-{{ section.id }}"
+      data-quick-add-popup
+    >
+      <button
+        type="button"
+        class="product-gallery__popup-close"
+        data-action="close-quick-add"
+        aria-label="{{ 'product_gallery.close' | t: default: 'Close' }}"
+      >
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="18" height="18">
+          <path d="M5 5L19 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M19 5L5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <div class="product-gallery__popup-body">
+        <img class="product-gallery__popup-image" data-popup-image src="" alt="" width="120" height="120">
+
+        <div class="product-gallery__popup-info">
+          <h3 class="product-gallery__popup-title" id="ProductGalleryPopupTitle-{{ section.id }}" data-popup-title></h3>
+          <p class="product-gallery__popup-price" data-popup-price></p>
+          <p class="product-gallery__popup-description" data-popup-description></p>
+
+          <div class="product-gallery__popup-option" data-popup-color-wrap hidden>
+            <span class="product-gallery__popup-label" data-popup-color-label>Color</span>
+            <div class="product-gallery__color-options" data-popup-color-options></div>
+          </div>
+
+          <div class="product-gallery__popup-option" data-popup-size-wrap hidden>
+            <span class="product-gallery__popup-label" data-popup-size-label>Size</span>
+            <div class="product-gallery__dropdown" data-popup-size-dropdown>
+              <button
+                type="button"
+                class="product-gallery__dropdown-toggle"
+                data-dropdown-toggle
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span data-dropdown-value>Choose your size</span>
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="14" height="14">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <ul class="product-gallery__dropdown-list" data-dropdown-list role="listbox" hidden></ul>
+            </div>
+          </div>
+
+          <p class="product-gallery__popup-status" data-popup-status role="status" aria-live="polite"></p>
+
+          <button
+            type="button"
+            class="cta-button cta-button--primary cta-button--full product-gallery__add-to-cart"
+            data-action="add-to-cart"
+          >
+            <span data-add-to-cart-label>Add to Cart</span>
+            <svg class="cta-button__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 12H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M14 6L20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ 'product-gallery.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-gallery.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Product Gallery",
+  "max_blocks": 16,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tisso vison in the wild"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "description_limit",
+      "min": 40,
+      "max": 300,
+      "step": 10,
+      "unit": "chars",
+      "label": "Popup description character limit",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Bundle rule"
+    },
+    {
+      "type": "product",
+      "id": "bundle_product",
+      "label": "Bonus product",
+      "info": "Automatically added to cart when a shopper selects a Black + Medium variant on any product below."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "hotspot_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot horizontal position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "hotspot_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot vertical position",
+          "default": 85
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Gallery",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}
