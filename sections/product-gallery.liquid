@@ -143,55 +143,57 @@
       </button>
 
       <div class="product-gallery__popup-body">
-        <img class="product-gallery__popup-image" data-popup-image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" width="120" height="120">
+        <img class="product-gallery__popup-image" data-popup-image src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" width="120" height="140">
 
         <div class="product-gallery__popup-info">
           <h3 class="product-gallery__popup-title" id="ProductGalleryPopupTitle-{{ section.id }}" data-popup-title></h3>
           <p class="product-gallery__popup-price" data-popup-price></p>
           <p class="product-gallery__popup-description" data-popup-description></p>
-
-          <div class="product-gallery__popup-option" data-popup-color-wrap hidden>
-            <span class="product-gallery__popup-label" data-popup-color-label>Color</span>
-            <div class="product-gallery__color-options" data-popup-color-options>
-              <span class="product-gallery__color-indicator" data-color-indicator aria-hidden="true"></span>
-            </div>
-          </div>
-
-          <div class="product-gallery__popup-option" data-popup-size-wrap hidden>
-            <span class="product-gallery__popup-label" data-popup-size-label>Size</span>
-            <div class="product-gallery__dropdown" data-popup-size-dropdown>
-              <button
-                type="button"
-                class="product-gallery__dropdown-toggle"
-                data-dropdown-toggle
-                aria-haspopup="listbox"
-                aria-expanded="false"
-              >
-                <span data-dropdown-value>Choose your size</span>
-                <span class="product-gallery__dropdown-icon-box">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="14" height="14">
-                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </button>
-              <ul class="product-gallery__dropdown-list" data-dropdown-list role="listbox" hidden></ul>
-            </div>
-          </div>
-
-          <p class="product-gallery__popup-status" data-popup-status role="status" aria-live="polite"></p>
-
-          <button
-            type="button"
-            class="cta-button cta-button--primary cta-button--full product-gallery__add-to-cart"
-            data-action="add-to-cart"
-          >
-            <span data-add-to-cart-label>Add to Cart</span>
-            <svg class="cta-button__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 12H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              <path d="M14 6L20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
         </div>
+      </div>
+
+      <div class="product-gallery__popup-controls">
+        <div class="product-gallery__popup-option" data-popup-color-wrap hidden>
+          <span class="product-gallery__popup-label" data-popup-color-label>Color</span>
+          <div class="product-gallery__color-options" data-popup-color-options>
+            <span class="product-gallery__color-indicator" data-color-indicator aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="product-gallery__popup-option" data-popup-size-wrap hidden>
+          <span class="product-gallery__popup-label" data-popup-size-label>Size</span>
+          <div class="product-gallery__dropdown" data-popup-size-dropdown>
+            <button
+              type="button"
+              class="product-gallery__dropdown-toggle"
+              data-dropdown-toggle
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span data-dropdown-value>Choose your size</span>
+              <span class="product-gallery__dropdown-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="14" height="14">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </button>
+            <ul class="product-gallery__dropdown-list" data-dropdown-list role="listbox" hidden></ul>
+          </div>
+        </div>
+
+        <p class="product-gallery__popup-status" data-popup-status role="status" aria-live="polite"></p>
+
+        <button
+          type="button"
+          class="cta-button cta-button--primary cta-button--full product-gallery__add-to-cart"
+          data-action="add-to-cart"
+        >
+          <span data-add-to-cart-label>Add to Cart</span>
+          <svg class="cta-button__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 12H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M14 6L20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
       </div>
     </div>
   </div>
