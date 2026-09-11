@@ -98,7 +98,7 @@
       "settings": {
         "heading": "Tisso vison in the wild",
         "heading_color": "#000000",
-        "products_to_show": 6,
+        "products_to_show": 16,
         "description_limit": 120,
         "padding_top_mobile": 24,
         "padding_top_tablet": 36,
