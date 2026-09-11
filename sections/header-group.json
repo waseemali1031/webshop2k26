@@ -11,31 +11,6 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "announcement-bar": {
-      "type": "announcement-bar",
-      "blocks": {
-        "announcement-bar-0": {
-          "type": "announcement",
-          "settings": {
-            "text": "Welcome to our store",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "announcement-bar-0"
-      ],
-      "disabled": true,
-      "settings": {
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "color_scheme": "scheme-1",
-        "show_line_separator": true,
-        "show_social": false,
-        "enable_country_selector": false,
-        "enable_language_selector": false
-      }
-    },
     "website_header_yN6rbA": {
       "type": "website-header",
       "custom_css": [],
@@ -90,6 +65,30 @@
         "button_label": "Shop Now",
         "button_link": "shopify://collections/all",
         "button_style": "primary"
+      }
+    },
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-bar-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "Welcome to our store123",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-bar-0"
+      ],
+      "settings": {
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "color_scheme": "scheme-1",
+        "show_line_separator": true,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false
       }
     },
     "product_gallery_ttEWbQ": {
@@ -167,10 +166,10 @@
     }
   },
   "order": [
-    "announcement-bar",
     "website_header_yN6rbA",
     "header",
     "hero_banner_agU4zM",
+    "announcement-bar",
     "product_gallery_ttEWbQ"
   ]
 }
