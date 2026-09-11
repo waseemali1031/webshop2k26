@@ -95,70 +95,14 @@
     },
     "product_gallery_AKmywn": {
       "type": "product-gallery",
-      "blocks": {
-        "product_UzhRGp": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "hotspot_x": 50,
-            "hotspot_y": 85
-          }
-        },
-        "product_xBM96L": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "hotspot_x": 50,
-            "hotspot_y": 85
-          }
-        },
-        "product_NfjyGL": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "hotspot_x": 50,
-            "hotspot_y": 85
-          }
-        },
-        "product_Y34HE9": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "hotspot_x": 50,
-            "hotspot_y": 85
-          }
-        },
-        "product_3fg6Hx": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "hotspot_x": 50,
-            "hotspot_y": 85
-          }
-        },
-        "product_yRNpx3": {
-          "type": "product",
-          "settings": {
-            "product": "",
-            "hotspot_x": 50,
-            "hotspot_y": 85
-          }
-        }
-      },
-      "block_order": [
-        "product_UzhRGp",
-        "product_xBM96L",
-        "product_NfjyGL",
-        "product_Y34HE9",
-        "product_3fg6Hx",
-        "product_yRNpx3"
-      ],
       "name": "Product Gallery",
       "settings": {
         "heading": "Tisso vison in the wild",
         "heading_color": "#000000",
+        "collection": "frontpage",
+        "products_to_show": 6,
         "description_limit": 120,
-        "bundle_product": "blue-silk-tuxedo",
+        "bundle_product": "silk-summer-top",
         "padding_top": 48,
         "padding_bottom": 48
       }
