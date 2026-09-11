@@ -59,7 +59,6 @@
     },
     "header": {
       "type": "header",
-      "disabled": true,
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
@@ -99,12 +98,14 @@
       "settings": {
         "heading": "Tisso vison in the wild",
         "heading_color": "#000000",
-        "collection": "frontpage",
         "products_to_show": 6,
         "description_limit": 120,
-        "bundle_product": "silk-summer-top",
-        "padding_top": 48,
-        "padding_bottom": 48
+        "padding_top_mobile": 24,
+        "padding_top_tablet": 36,
+        "padding_top_desktop": 48,
+        "padding_bottom_mobile": 24,
+        "padding_bottom_tablet": 36,
+        "padding_bottom_desktop": 48
       }
     }
   },
