@@ -123,23 +123,23 @@
           "type": "product",
           "settings": {
             "product": "classic-leather-jacket",
-            "hotspot_x": 65,
-            "hotspot_y": 30
+            "hotspot_x": 10,
+            "hotspot_y": 15
           }
         },
         "product_J438rg": {
           "type": "product",
           "settings": {
             "product": "classic-varsity-top",
-            "hotspot_x": 65,
-            "hotspot_y": 30
+            "hotspot_x": 25,
+            "hotspot_y": 46
           }
         },
         "product_hfxNDA": {
           "type": "product",
           "settings": {
             "product": "dark-denim-top",
-            "hotspot_x": 65,
+            "hotspot_x": 45,
             "hotspot_y": 30
           }
         }
