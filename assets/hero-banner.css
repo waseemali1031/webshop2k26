@@ -20,7 +20,7 @@
 .hero-banner__media {
   position: relative;
   width: 100%;
-  aspect-ratio: var(--hero-banner-mobile-ratio, 1.42);
+  aspect-ratio: 375/ 264; 
   overflow: hidden;
 }
 
