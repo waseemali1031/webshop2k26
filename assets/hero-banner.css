@@ -1,133 +1,132 @@
 /* ===================================
-   HERO BANNER
-   Mobile: heading/description in flow, image below,
-     CTA overlaid bottom-left on the image.
-   >=768px: image becomes full-bleed background,
-     heading/description/CTA overlay together bottom-left.
-   Spacing/type scale fluidly via clamp() instead of fixed
-   per-breakpoint jumps.
-   =================================== */
+  HERO BANNER
+  Mobile: heading/description in flow, image below,
+    CTA overlaid bottom-left on the image.
+  >=768px: image becomes full-bleed background,
+    heading/description/CTA overlay together bottom-left.
+  Spacing/type scale fluidly via clamp() instead of fixed
+  per-breakpoint jumps.
+  =================================== */
 
 .hero-banner__inner {
-  position: relative;
-  background-color: #f5f5f5; /* fallback if no image is set */
+position: relative;
+background-color: #f5f5f5; /* fallback if no image is set */
 }
 
 /* -------------------------
-   MEDIA
-   ------------------------- */
+  MEDIA
+  ------------------------- */
 
 .hero-banner__media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 686/ 264; 
-  overflow: hidden;
-}
+position: relative;
+width: 100%;
+aspect-ratio: 375/ 264;
+overflow: hidden;
 
 .hero-banner__image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+display: block;
+width: 100%;
+height: 100%;
+object-fit: cover;
 }
 
 /* -------------------------
-   CONTAINER
-   Aligns content to the theme's standard page-width grid.
-   The image stays full-bleed; only content is constrained.
-   Stays static on mobile (default) so the CTA's absolute
-   positioning skips past it to .hero-banner__inner instead
-   of anchoring to this text-only box. Becomes the positioning
-   context only from 768px up (see media query below).
-   ------------------------- */
+  CONTAINER
+  Aligns content to the theme's standard page-width grid.
+  The image stays full-bleed; only content is constrained.
+  Stays static on mobile (default) so the CTA's absolute
+  positioning skips past it to .hero-banner__inner instead
+  of anchoring to this text-only box. Becomes the positioning
+  context only from 768px up (see media query below).
+  ------------------------- */
 
 /* -------------------------
-   CONTENT (heading, description, CTA)
-   Mobile: normal flow, centered, sits above the image.
-   Single background color for the whole panel - not per-element.
-   ------------------------- */
+  CONTENT (heading, description, CTA)
+  Mobile: normal flow, centered, sits above the image.
+  Single background color for the whole panel - not per-element.
+  ------------------------- */
 
 .hero-banner__content {
-  padding: clamp(24px, 6vw, 48px) clamp(20px, 6vw, 40px);
-  text-align: center;
-  background-color: var(--hero-banner-content-bg, transparent);
+padding: clamp(24px, 6vw, 48px) clamp(20px, 6vw, 40px);
+text-align: center;
+background-color: var(--hero-banner-content-bg, transparent);
 }
 
 .hero-banner__heading {
-  margin: 0 0 clamp(12px, 2.5vw, 20px);
-  font-size: clamp(28px, 6vw, 56px);
-  line-height: 1.15;
-  color: var(--hero-banner-heading-color, #000000);
+margin: 0 0 clamp(12px, 2.5vw, 20px);
+font-size: clamp(28px, 6vw, 56px);
+line-height: 1.15;
+color: var(--hero-banner-heading-color, #000000);
 }
 
 .hero-banner__description {
-  margin: 0;
-  font-size: clamp(14px, 1.6vw, 18px);
-  line-height: 1.5;
-  color: var(--hero-banner-text-color, #000000);
+margin: 0;
+font-size: clamp(14px, 1.6vw, 18px);
+line-height: 1.5;
+color: var(--hero-banner-text-color, #000000);
 }
 
 .hero-banner__description p {
-  margin: 0 0 0.5em;
+margin: 0 0 0.5em;
 }
 
 .hero-banner__description p:last-child {
-  margin-bottom: 0;
+margin-bottom: 0;
 }
 
 /* CTA pulled out of normal flow on mobile and anchored to the
-   bottom-left of .hero-banner__inner, which visually lands it
-   on the image since the image is the last element in flow. */
+  bottom-left of .hero-banner__inner, which visually lands it
+  on the image since the image is the last element in flow. */
 .hero-banner__cta {
-  position: absolute;
-  left: 0;
-  right:0;
-  margin: 0 auto;
-  bottom: clamp(16px, 5vw, 32px);
-  z-index: 2;
+position: absolute;
+left: 0;
+right:0;
+margin: 0 auto;
+bottom: clamp(16px, 5vw, 32px);
+z-index: 2;
 }
 
 /* -------------------------
-   TABLET / DESKTOP (>=768px)
-   Image becomes full-bleed background; content overlays it.
-   ------------------------- */
+  TABLET / DESKTOP (>=768px)
+  Image becomes full-bleed background; content overlays it.
+  ------------------------- */
 
 @media (min-width: 768px) {
-  .hero-banner__inner {
-    aspect-ratio: var(--hero-banner-desktop-ratio, 2.4);
-    min-height: 420px;
-  }
+.hero-banner__inner {
+  aspect-ratio: var(--hero-banner-desktop-ratio, 2.4);
+  min-height: 420px;
+}
 
-  .hero-banner__media {
-    position: absolute;
-    inset: 0;
-    aspect-ratio: auto;
-    z-index: 0;
-  }
+.hero-banner__media {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  z-index: 0;
+}
 
-  /* page-width's own max-width + auto margins center this within
-     the full-bleed inner, so content aligns to the site's grid
-     instead of the raw viewport edge */
-  .hero-banner__container {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
+/* page-width's own max-width + auto margins center this within
+    the full-bleed inner, so content aligns to the site's grid
+    instead of the raw viewport edge */
+.hero-banner__container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
 
-  .hero-banner__content {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    max-width: clamp(360px, 40vw, 560px);
-    padding: clamp(32px, 5vw, 64px);
-    text-align: left;
-  }
+.hero-banner__content {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  max-width: clamp(360px, 40vw, 560px);
+  padding: clamp(32px, 5vw, 64px);
+  text-align: left;
+}
 
-  /* CTA rejoins normal flow, stacked below the description */
-  .hero-banner__cta {
-    position: static;
-    left: auto;
-    bottom: auto;
-    margin-top: clamp(16px, 3vw, 24px);
-  }
+/* CTA rejoins normal flow, stacked below the description */
+.hero-banner__cta {
+  position: static;
+  left: auto;
+  bottom: auto;
+  margin-top: clamp(16px, 3vw, 24px);
+}
 }
