@@ -92,13 +92,79 @@
         "button_style": "primary"
       }
     },
-    "product_gallery_AKmywn": {
+    "product_gallery_ttEWbQ": {
       "type": "product-gallery",
+      "blocks": {
+        "product_J438rg": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "hotspot_x": 65,
+            "hotspot_y": 30
+          }
+        },
+        "product_hKfDwJ": {
+          "type": "product",
+          "settings": {
+            "product": "black-leather-bag",
+            "hotspot_x": 65,
+            "hotspot_y": 30
+          }
+        },
+        "product_HaNxFL": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "hotspot_x": 65,
+            "hotspot_y": 30
+          }
+        },
+        "product_hfxNDA": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "hotspot_x": 65,
+            "hotspot_y": 30
+          }
+        },
+        "product_6cLfYn": {
+          "type": "product",
+          "settings": {
+            "product": "chequered-red-shirt",
+            "hotspot_x": 65,
+            "hotspot_y": 30
+          }
+        },
+        "product_Tnw798": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "hotspot_x": 65,
+            "hotspot_y": 30
+          }
+        },
+        "product_yttTbx": {
+          "type": "product",
+          "settings": {
+            "product": "floral-white-top",
+            "hotspot_x": 25,
+            "hotspot_y": 90
+          }
+        }
+      },
+      "block_order": [
+        "product_J438rg",
+        "product_hKfDwJ",
+        "product_HaNxFL",
+        "product_hfxNDA",
+        "product_6cLfYn",
+        "product_Tnw798",
+        "product_yttTbx"
+      ],
       "name": "Product Gallery",
       "settings": {
         "heading": "Tisso vison in the wild",
         "heading_color": "#000000",
-        "products_to_show": 16,
         "description_limit": 120,
         "padding_top_mobile": 24,
         "padding_top_tablet": 36,
@@ -114,6 +180,6 @@
     "website_header_yN6rbA",
     "header",
     "hero_banner_agU4zM",
-    "product_gallery_AKmywn"
+    "product_gallery_ttEWbQ"
   ]
 }
