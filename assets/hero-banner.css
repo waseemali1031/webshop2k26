@@ -35,11 +35,11 @@
    CONTAINER
    Aligns content to the theme's standard page-width grid.
    The image stays full-bleed; only content is constrained.
+   Stays static on mobile (default) so the CTA's absolute
+   positioning skips past it to .hero-banner__inner instead
+   of anchoring to this text-only box. Becomes the positioning
+   context only from 768px up (see media query below).
    ------------------------- */
-
-.hero-banner__container {
-  position: relative;
-}
 
 /* -------------------------
    CONTENT (heading, description, CTA)
