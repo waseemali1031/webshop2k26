@@ -1,14 +1,35 @@
 /* ===================================
    PRODUCT GALLERY
+   Products pulled from a merchant-chosen collection, up to a merchant-
+   chosen count (fewer shown if the collection has fewer products).
    Grid: 2 cols mobile, 3 cols >=768px (CSS Grid).
    Card internals, popup, and controls use flexbox.
    Container built from scratch except the shared .page-width
    layout utility (no other Dawn components/sections used).
+   Padding scales mobile -> tablet -> desktop (see media queries below)
+   rather than applying one flat value at every size.
    =================================== */
 
 .product-gallery {
-  padding-top: var(--product-gallery-padding-top, 48px);
-  padding-bottom: var(--product-gallery-padding-bottom, 48px);
+  /* Mobile: roughly half the configured desktop value */
+  padding-top: calc(var(--product-gallery-padding-top-desktop, 48px) * 0.5);
+  padding-bottom: calc(var(--product-gallery-padding-bottom-desktop, 48px) * 0.5);
+}
+
+@media (min-width: 480px) {
+  .product-gallery {
+    /* Large mobile / small tablet: roughly three-quarters */
+    padding-top: calc(var(--product-gallery-padding-top-desktop, 48px) * 0.75);
+    padding-bottom: calc(var(--product-gallery-padding-bottom-desktop, 48px) * 0.75);
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-gallery {
+    /* Desktop: the exact configured value */
+    padding-top: var(--product-gallery-padding-top-desktop, 48px);
+    padding-bottom: var(--product-gallery-padding-bottom-desktop, 48px);
+  }
 }
 
 .product-gallery__heading {
@@ -68,8 +89,6 @@
 
 .product-gallery__hotspot {
   position: absolute;
-  left: clamp(8%, var(--hotspot-x, 50%), 92%);
-  top: clamp(8%, var(--hotspot-y, 85%), 92%);
   transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
@@ -83,6 +102,15 @@
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
+
+/* Auto-cycled presets (see forloop.index0 | modulo: 5 in the Liquid) -
+   kept well within the card edges so the button is always fully visible
+   regardless of card size. */
+.product-gallery__hotspot--pos-0 { left: 50%; top: 85%; }
+.product-gallery__hotspot--pos-1 { left: 20%; top: 30%; }
+.product-gallery__hotspot--pos-2 { left: 80%; top: 55%; }
+.product-gallery__hotspot--pos-3 { left: 30%; top: 75%; }
+.product-gallery__hotspot--pos-4 { left: 70%; top: 20%; }
 
 .product-gallery__hotspot:hover,
 .product-gallery__hotspot:focus-visible {

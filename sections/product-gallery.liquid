@@ -1,9 +1,14 @@
 {%- liquid
   # Component: Product Gallery
-  # Description: Photo grid where each image has a "+" hotspot at a merchant-
-  #   chosen position. Clicking it opens a shared quick-add popup showing the
-  #   linked product's real name/price/description/variants, with dynamic
-  #   color + size selection and a working Add to Cart (with a bundle rule:
+  # Description: Photo grid pulled from a merchant-chosen collection (up to
+  #   a merchant-chosen count - if the collection has fewer products than
+  #   that count, only the products that actually exist are shown). Each
+  #   card's "+" hotspot cycles through a small set of preset positions
+  #   automatically (no per-product manual placement, since products are
+  #   now pulled dynamically rather than hand-picked one at a time).
+  #   Clicking a hotspot opens a shared quick-add popup showing that
+  #   product's real name/price/description/variants, with dynamic color +
+  #   size selection and a working Add to Cart (with a bundle rule:
   #   selecting Black + Medium on ANY product also adds a configured bonus
   #   product to the cart in the same request).
   # Sections required by the brief: this is the "Grid" section (the "Banner"
@@ -18,6 +23,8 @@
   assign heading_color = section.settings.heading_color
   assign description_limit = section.settings.description_limit
   assign bundle_product = section.settings.bundle_product
+  assign collection = section.settings.collection
+  assign products_to_show = section.settings.products_to_show
 -%}
 
 <section
@@ -32,8 +39,8 @@
   <style>
     .product-gallery[data-section-id="{{ section.id }}"] {
       --product-gallery-heading-color: {{ heading_color }};
-      --product-gallery-padding-top: {{ section.settings.padding_top }}px;
-      --product-gallery-padding-bottom: {{ section.settings.padding_bottom }}px;
+      --product-gallery-padding-top-desktop: {{ section.settings.padding_top }}px;
+      --product-gallery-padding-bottom-desktop: {{ section.settings.padding_bottom }}px;
     }
   </style>
 
@@ -43,72 +50,73 @@
       <h2 class="product-gallery__heading">{{ heading }}</h2>
     {%- endif -%}
 
-    {%- if section.blocks.size > 0 -%}
+    {%- if collection != blank and collection.products.size > 0 -%}
       <div class="product-gallery__grid">
-        {%- for block in section.blocks -%}
-          {%- assign product = block.settings.product -%}
-          {%- if product != blank -%}
-            <div class="product-gallery__card" {{ block.shopify_attributes }}>
-              <div
-                class="product-gallery__media"
-                style="--hotspot-x: {{ block.settings.hotspot_x }}%; --hotspot-y: {{ block.settings.hotspot_y }}%;"
+        {%- for product in collection.products limit: products_to_show -%}
+          {%- comment -%}
+            Hotspot position cycles through 5 presets by card index, so
+            products pulled dynamically from a collection still get some
+            visual variety instead of every "+" sitting in the same spot.
+          {%- endcomment -%}
+          {%- assign hotspot_variant = forloop.index0 | modulo: 5 -%}
+
+          <div class="product-gallery__card">
+            <div class="product-gallery__media">
+              <img
+                class="product-gallery__image"
+                src="{{ product.featured_image | image_url: width: 800 }}"
+                srcset="
+                  {{- product.featured_image | image_url: width: 400 }} 400w,
+                  {{ product.featured_image | image_url: width: 800 }} 800w,
+                  {{ product.featured_image | image_url: width: 1200 }} 1200w"
+                sizes="(min-width: 768px) 33vw, 50vw"
+                alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                width="{{ product.featured_image.width }}"
+                height="{{ product.featured_image.height }}"
+                loading="lazy"
               >
-                <img
-                  class="product-gallery__image"
-                  src="{{ product.featured_image | image_url: width: 800 }}"
-                  srcset="
-                    {{- product.featured_image | image_url: width: 400 }} 400w,
-                    {{ product.featured_image | image_url: width: 800 }} 800w,
-                    {{ product.featured_image | image_url: width: 1200 }} 1200w"
-                  sizes="(min-width: 768px) 33vw, 50vw"
-                  alt="{{ product.featured_image.alt | default: product.title | escape }}"
-                  width="{{ product.featured_image.width }}"
-                  height="{{ product.featured_image.height }}"
-                  loading="lazy"
-                >
 
-                <button
-                  type="button"
-                  class="product-gallery__hotspot"
-                  data-action="open-quick-add"
-                  aria-label="Quick add {{ product.title | escape }}"
-                  aria-haspopup="dialog"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
-                    <path d="M12 5V19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                    <path d="M5 12H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                  </svg>
-                </button>
+              <button
+                type="button"
+                class="product-gallery__hotspot product-gallery__hotspot--pos-{{ hotspot_variant }}"
+                data-action="open-quick-add"
+                aria-label="Quick add {{ product.title | escape }}"
+                aria-haspopup="dialog"
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+                  <path d="M12 5V19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <path d="M5 12H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </button>
 
-                {%- comment -%}
-                  Product data for this card, read by product-gallery.js when
-                  its hotspot is clicked. Description is stripped of HTML here
-                  (truncation to data-description-limit happens in JS, at the
-                  last full word, so it never breaks the popup layout).
-                {%- endcomment -%}
-                <script type="application/json" data-product-json>
-                  {
-                    "id": {{ product.id | json }},
-                    "title": {{ product.title | json }},
-                    "url": {{ product.url | json }},
-                    "image": {{ product.featured_image | image_url: width: 200 | json }},
-                    "description": {{ product.description | strip_html | json }},
-                    "optionNames": {{ product.options | json }},
-                    "variants": [
-                      {%- for variant in product.variants -%}
-                        {
-                          "id": {{ variant.id | json }},
-                          "available": {{ variant.available | json }},
-                          "price": {{ variant.price | money | json }},
-                          "options": {{ variant.options | json }}
-                        }{%- unless forloop.last -%},{%- endunless -%}
-                      {%- endfor -%}
-                    ]
-                  }
-                </script>
-              </div>
+              {%- comment -%}
+                Product data for this card, read by product-gallery.js when
+                its hotspot is clicked. Description is stripped of HTML here
+                (truncation to data-description-limit happens in JS, at the
+                last full word, so it never breaks the popup layout).
+              {%- endcomment -%}
+              <script type="application/json" data-product-json>
+                {
+                  "id": {{ product.id | json }},
+                  "title": {{ product.title | json }},
+                  "url": {{ product.url | json }},
+                  "image": {{ product.featured_image | image_url: width: 200 | json }},
+                  "description": {{ product.description | strip_html | json }},
+                  "optionNames": {{ product.options | json }},
+                  "variants": [
+                    {%- for variant in product.variants -%}
+                      {
+                        "id": {{ variant.id | json }},
+                        "available": {{ variant.available | json }},
+                        "price": {{ variant.price | money | json }},
+                        "options": {{ variant.options | json }}
+                      }{%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                  ]
+                }
+              </script>
             </div>
-          {%- endif -%}
+          </div>
         {%- endfor -%}
       </div>
     {%- endif -%}
@@ -198,7 +206,6 @@
 {% schema %}
 {
   "name": "Product Gallery",
-  "max_blocks": 16,
   "settings": [
     {
       "type": "header",
@@ -215,6 +222,25 @@
       "id": "heading_color",
       "label": "Heading color",
       "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 1,
+      "max": 16,
+      "step": 1,
+      "label": "Number of products to show",
+      "info": "Shows fewer if the collection has fewer products than this.",
+      "default": 6
     },
     {
       "type": "range",
@@ -247,7 +273,8 @@
       "max": 120,
       "step": 4,
       "unit": "px",
-      "label": "Top padding",
+      "label": "Top padding (desktop)",
+      "info": "Scales down proportionally on tablet and mobile.",
       "default": 48
     },
     {
@@ -257,54 +284,14 @@
       "max": 120,
       "step": 4,
       "unit": "px",
-      "label": "Bottom padding",
+      "label": "Bottom padding (desktop)",
+      "info": "Scales down proportionally on tablet and mobile.",
       "default": 48
-    }
-  ],
-  "blocks": [
-    {
-      "type": "product",
-      "name": "Product",
-      "settings": [
-        {
-          "type": "product",
-          "id": "product",
-          "label": "Product"
-        },
-        {
-          "type": "range",
-          "id": "hotspot_x",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
-          "label": "Hotspot horizontal position",
-          "default": 50
-        },
-        {
-          "type": "range",
-          "id": "hotspot_y",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
-          "label": "Hotspot vertical position",
-          "default": 85
-        }
-      ]
     }
   ],
   "presets": [
     {
-      "name": "Product Gallery",
-      "blocks": [
-        { "type": "product" },
-        { "type": "product" },
-        { "type": "product" },
-        { "type": "product" },
-        { "type": "product" },
-        { "type": "product" }
-      ]
+      "name": "Product Gallery"
     }
   ]
 }
