@@ -107,8 +107,8 @@
           "type": "product",
           "settings": {
             "product": "blue-silk-tuxedo",
-            "hotspot_x": 65,
-            "hotspot_y": 30
+            "hotspot_x": 55,
+            "hotspot_y": 83
           }
         },
         "product_yttTbx": {
@@ -140,7 +140,7 @@
           "settings": {
             "product": "dark-denim-top",
             "hotspot_x": 45,
-            "hotspot_y": 30
+            "hotspot_y": 45
           }
         }
       },
